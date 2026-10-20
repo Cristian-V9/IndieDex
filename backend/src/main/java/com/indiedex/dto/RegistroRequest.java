@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 /** Datos para crear una cuenta. El rol NO se recibe: toda cuenta nueva es USER. */
 public record RegistroRequest(
         @NotBlank(message = "El nombre de usuario es obligatorio")
-        @Size(min = 3, max = 30, message = "El nombre de usuario debe tener entre 3 y 30 caracteres")
+        @Size(min = 3, max = 24, message = "El nombre de usuario debe tener entre 3 y 24 caracteres")
         @Pattern(regexp = "^[A-Za-z0-9_.-]+$",
                 message = "El nombre de usuario solo puede tener letras, números, punto, guion y guion bajo")
         String nombreUsuario,

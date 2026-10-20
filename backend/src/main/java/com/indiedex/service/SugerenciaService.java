@@ -11,6 +11,7 @@ import com.indiedex.repository.UsuarioRepository;
 import com.indiedex.repository.VotoRepository;
 import com.indiedex.security.UsuarioPrincipal;
 import com.indiedex.util.Paginas;
+import com.indiedex.util.Textos;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -52,14 +53,15 @@ public class SugerenciaService {
      * @param orden "votos" (más votadas) o "recientes"
      */
     public PaginaResponse<SugerenciaResponse> listar(List<EstadoSugerencia> estados, TipoSugerencia tipo,
-                                                     Long juegoId, String orden, int pagina, int tamano,
-                                                     UsuarioPrincipal yo) {
+                                                     Long juegoId, String buscar, String orden,
+                                                     int pagina, int tamano, UsuarioPrincipal yo) {
         List<EstadoSugerencia> filtro = (estados == null || estados.isEmpty()) ? VISIBLES_POR_DEFECTO : estados;
         Sort sort = "recientes".equalsIgnoreCase(orden)
                 ? Sort.by(Sort.Direction.DESC, "fechaCreacion")
                 : Sort.by(Sort.Direction.DESC, "totalVotos").and(Sort.by(Sort.Direction.DESC, "fechaCreacion"));
 
-        Page<Sugerencia> page = sugerenciaRepository.buscar(filtro, tipo, juegoId, Paginas.de(pagina, tamano, sort));
+        Page<Sugerencia> page = sugerenciaRepository.buscar(filtro, tipo, juegoId, Textos.limpiar(buscar),
+                Paginas.de(pagina, tamano, sort));
         Set<Long> votadas = votadasPor(yo, page.getContent());
         return PaginaResponse.desde(page, s -> SugerenciaResponse.desde(s, votadas.contains(s.getId())));
     }

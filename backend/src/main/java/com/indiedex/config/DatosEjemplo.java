@@ -340,7 +340,7 @@ public class DatosEjemplo implements CommandLineRunner {
               reconoce la costa y reserva siempre unas horas para volver. Esta guía te acompaña desde
               el primer muelle hasta tu primera mejora.
             </p>
-            <h2 id="antes-de-zarpar">01 / Antes de zarpar</h2>
+            <h2>01 / Antes de zarpar</h2>
             <p>
               Al llegar a Médula Mayor, habla con el alcalde y revisa el equipo de tu barco. La caña inicial
               permite capturar peces costeros; no sirve para todos los puntos de pesca que verás en el mapa.
@@ -358,7 +358,7 @@ public class DatosEjemplo implements CommandLineRunner {
                 distancia al puerto y la velocidad del barco determinan tu margen real.
               </p>
             </aside>
-            <h2 id="pesca-cerca-de-casa">02 / Pesca cerca de casa</h2>
+            <h2>02 / Pesca cerca de casa</h2>
             <p>
               Busca los bancos de peces en las aguas que rodean las Médulas. Los círculos y las aves sobre la
               superficie te ayudan a localizarlos. Acércate, comprueba que tienes el equipo adecuado y completa
@@ -376,7 +376,7 @@ public class DatosEjemplo implements CommandLineRunner {
               </div>
               <figcaption>Pesca junto a la costa mientras aprendes a reconocer los puntos de referencia.</figcaption>
             </figure>
-            <h2 id="el-regreso-al-puerto">03 / El regreso al puerto</h2>
+            <h2>03 / El regreso al puerto</h2>
             <p>
               Usa el faro como referencia y evita navegar en línea recta hacia una costa que no conoces: puede
               haber rocas en el camino. Por la noche aumenta el peligro y la falta de descanso eleva el pánico.
@@ -387,7 +387,7 @@ public class DatosEjemplo implements CommandLineRunner {
               del tiempo. Después, visita el astillero para reparar cualquier daño: una casilla dañada de la
               bodega puede inutilizar el equipo instalado en ella.
             </p>
-            <h2 id="tus-primeras-mejoras">04 / Tus primeras mejoras</h2>
+            <h2>04 / Tus primeras mejoras</h2>
             <p>
               Invierte según tu forma de jugar. Estas tres prioridades te permiten pescar más variedad, regresar
               con margen y aprovechar mejor cada jornada.
@@ -417,17 +417,17 @@ public class DatosEjemplo implements CommandLineRunner {
               Tu barco es tu casa, tu herramienta y tu escudo. Cada mejora cambia lo que puedes hacer en una
               jornada, así que conviene elegir con calma qué comprar primero.
             </p>
-            <h2 id="el-motor-primero">01 / El motor primero</h2>
+            <h2>01 / El motor primero</h2>
             <p>
               Un motor más rápido te da tiempo: llegas antes a los bancos de peces y vuelves al puerto con
               margen. Si dudas entre varias mejoras, esta suele ser la que más se nota al principio.
             </p>
-            <h2 id="canas-para-cada-agua">02 / Cañas para cada tipo de agua</h2>
+            <h2>02 / Cañas para cada tipo de agua</h2>
             <p>
               No todas las cañas sirven para todas las especies. Revisa el tipo de agua que indica cada pez y
               combina cañas para no dejar bancos sin aprovechar.
             </p>
-            <h2 id="espacio-en-la-bodega">03 / Espacio en la bodega</h2>
+            <h2>03 / Espacio en la bodega</h2>
             <p>
               Ampliar el casco te da más casillas para el equipo y las capturas. Recuerda que el equipo también
               ocupa espacio: planifica antes de instalar algo nuevo.
@@ -443,12 +443,12 @@ public class DatosEjemplo implements CommandLineRunner {
               El Coleccionista tiene un encargo para ti: recuperar reliquias perdidas en el archipiélago.
               Esta guía resume cómo prepararte para buscarlas sin revelar la historia.
             </p>
-            <h2 id="antes-de-empezar">01 / Antes de empezar</h2>
+            <h2>01 / Antes de empezar</h2>
             <p>
               Cada reliquia está en una región distinta. Mejora el motor y lleva equipo de dragado: algunas
               zonas quedan lejos del puerto y otras exigen recuperar objetos del fondo.
             </p>
-            <h2 id="consejos">02 / Consejos para la búsqueda</h2>
+            <h2>02 / Consejos para la búsqueda</h2>
             <p>
               Habla con los habitantes de cada región: sus historias dan pistas. Planifica las travesías
               largas de día y descansa en los muelles que encuentres en el camino.
@@ -464,17 +464,17 @@ public class DatosEjemplo implements CommandLineRunner {
               Algunos peces del archipiélago no son lo que parecen. Las aberraciones son versiones alteradas
               de especies comunes y suelen valer más que sus parientes normales.
             </p>
-            <h2 id="donde-buscar">01 / Dónde buscarlas</h2>
+            <h2>01 / Dónde buscarlas</h2>
             <p>
               Aparecen en bancos de peces con un aspecto distinto al habitual. Fíjate en la superficie del agua
               y en las alertas que muestra el juego al acercarte.
             </p>
-            <h2 id="el-equipo-adecuado">02 / El equipo adecuado</h2>
+            <h2>02 / El equipo adecuado</h2>
             <p>
               Necesitas la misma caña que para la especie original. Si no puedes pescar un banco, revisa el
               tipo de agua y vuelve con el equipo correcto.
             </p>
-            <h2 id="de-noche">03 / De noche</h2>
+            <h2>03 / De noche</h2>
             <p>
               La noche trae más sorpresas, pero también más peligro. Si sales a buscarlas tarde, ten claro el
               camino de vuelta y no te alejes de los muelles.
@@ -486,12 +486,12 @@ public class DatosEjemplo implements CommandLineRunner {
               Entre muelle y muelle te cruzarás con una mercader que viaja por el archipiélago con objetos
               difíciles de encontrar en el pueblo.
             </p>
-            <h2 id="donde-encontrarla">01 / Dónde encontrarla</h2>
+            <h2>01 / Dónde encontrarla</h2>
             <p>
               Cambia de ubicación según la región que estés explorando. Si ves su puesto, acércate: su
               inventario no es el mismo que el de las tiendas de Médula Mayor.
             </p>
-            <h2 id="que-ofrece">02 / Qué ofrece</h2>
+            <h2>02 / Qué ofrece</h2>
             <p>
               Equipo y objetos poco comunes. Revisa siempre el espacio de tu bodega antes de comprar.
             </p>

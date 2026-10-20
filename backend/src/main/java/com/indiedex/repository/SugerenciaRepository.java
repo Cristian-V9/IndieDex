@@ -15,16 +15,21 @@ import java.util.List;
 
 public interface SugerenciaRepository extends JpaRepository<Sugerencia, Long> {
 
-    /** Lista de sugerencias filtrada por estados, tipo y juego (opcionales). */
+    /** Lista de sugerencias filtrada por estados, tipo, juego y texto (título, descripción o autor). */
     @Query("""
             select s from Sugerencia s left join s.juego j
             where s.estado in :estados
               and (:tipo is null or s.tipo = :tipo)
               and (:juegoId is null or j.id = :juegoId)
+              and (:buscar is null
+                   or lower(s.titulo) like lower(concat('%', :buscar, '%'))
+                   or lower(s.descripcion) like lower(concat('%', :buscar, '%'))
+                   or lower(s.autor.nombreUsuario) like lower(concat('%', :buscar, '%')))
             """)
     Page<Sugerencia> buscar(@Param("estados") List<EstadoSugerencia> estados,
                             @Param("tipo") TipoSugerencia tipo,
                             @Param("juegoId") Long juegoId,
+                            @Param("buscar") String buscar,
                             Pageable pagina);
 
     long countByEstado(EstadoSugerencia estado);

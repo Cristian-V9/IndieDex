@@ -27,17 +27,18 @@ public class SugerenciaController {
     private final SugerenciaService sugerenciaService;
 
     @Operation(summary = "Listar propuestas",
-            description = "estado se puede repetir (?estado=VOTOS&estado=REVISION). Sin estado: todas menos rechazadas. "
+            description = "buscar filtra por título, descripción o autor. estado se puede repetir (?estado=VOTOS&estado=REVISION). Sin estado: todas menos rechazadas. "
                     + "orden: votos (por defecto) o recientes. Con sesión indica votadaPorMi.")
     @GetMapping
     public PaginaResponse<SugerenciaResponse> listar(@RequestParam(required = false) List<EstadoSugerencia> estado,
                                                      @RequestParam(required = false) TipoSugerencia tipo,
                                                      @RequestParam(required = false) Long juegoId,
+                                                     @RequestParam(required = false) String buscar,
                                                      @RequestParam(defaultValue = "votos") String orden,
                                                      @RequestParam(defaultValue = "0") int pagina,
                                                      @RequestParam(defaultValue = "10") int tamano,
                                                      @AuthenticationPrincipal UsuarioPrincipal yo) {
-        return sugerenciaService.listar(estado, tipo, juegoId, orden, pagina, tamano, yo);
+        return sugerenciaService.listar(estado, tipo, juegoId, buscar, orden, pagina, tamano, yo);
     }
 
     @Operation(summary = "Cifras del panel de revisión", description = "Rol EDITOR o ADMIN")
