@@ -1,0 +1,204 @@
+
+.migas {
+  padding-top: 28px;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+.migas a:hover { color: var(--ambar); }
+.migas [aria-current] { color: var(--crema); }
+
+
+.juego-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 400px;
+  margin-top: 20px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #123447, #040d14);
+  border: 1px solid var(--borde);
+  border-radius: 24px;
+}
+.juego-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.juego-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(3, 13, 20, .92) 0%, rgba(3, 13, 20, .35) 55%, rgba(3, 13, 20, .1) 100%);
+}
+.juego-hero__texto {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 560px;
+  padding: 40px;
+}
+.juego-hero h1 { font-size: clamp(44px, 6vw, 72px); }
+.juego-hero p { font-size: 15px; }
+
+
+.juego-diseno {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 32px;
+  align-items: start;
+  margin-top: 32px;
+}
+
+.pestanas {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--borde);
+}
+.pestana {
+  margin-bottom: -1px;
+  padding: 12px;
+  border-bottom: 2px solid transparent;
+  font-family: var(--fuente-titulo);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.pestana:hover { color: var(--crema); }
+.pestana--activa { color: var(--ambar); border-bottom-color: var(--ambar); }
+
+.juego-titulo { margin-top: 28px; font-size: 28px; }
+.juego-subtitulo {
+  margin-top: 8px;
+  max-width: 620px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.buscador-guias {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  margin-top: 20px;
+  padding: 0 14px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  color: var(--ambar);
+}
+.buscador-guias input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 14px;
+}
+.buscador-guias input::placeholder { color: var(--texto-suave); }
+
+
+.lista-guias {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guia {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  transition: border-color .15s;
+}
+.guia:hover { border-color: var(--teal); }
+
+.guia__icono {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--teal-oscuro);
+  color: var(--ambar);
+}
+.guia__cuerpo { display: flex; flex-direction: column; gap: 4px; }
+.guia__cuerpo h3 { font-size: 19px; }
+.guia__cuerpo p { font-size: 13px; color: var(--texto-suave); }
+.guia__cuerpo small { font-size: 11px; color: var(--texto-suave); }
+.guia__flecha { color: var(--ambar); align-self: start; }
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.paginacion__num {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  font-size: 12px;
+  font-weight: 700;
+}
+.paginacion__num:hover { border-color: var(--ambar); }
+.paginacion__num--activa { background: var(--ambar); border-color: var(--ambar); color: var(--fondo); }
+.paginacion__siguiente { margin-left: 4px; font-size: 12px; color: var(--ambar); }
+
+
+.ficha {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+}
+.ficha h2 { font-size: 22px; }
+.ficha dl { margin: 0; }
+.ficha dt {
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.ficha dd { margin: 2px 0 14px; font-size: 13px; }
+.ficha dd:last-child { margin-bottom: 0; }
+
+.ficha__wiki {
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+.ficha__wiki p + p { margin-top: 4px; }
+
+
+@media (max-width: 1000px) {
+  .juego-diseno { grid-template-columns: 1fr; }
+  .ficha { position: static; }
+}
+@media (max-width: 640px) {
+  .juego-hero { min-height: 320px; }
+  .juego-hero__texto { padding: 24px; }
+  .pestana { padding: 10px 6px; font-size: 13px; }
+  .guia { grid-template-columns: 44px 1fr; }
+  .guia__flecha { display: none; }
+}

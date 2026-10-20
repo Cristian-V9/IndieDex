@@ -1,0 +1,33 @@
+.pie {
+  margin-top: 64px;
+  padding-block: 40px;
+  background: var(--fondo-profundo);
+  border-top: 1px solid var(--borde);
+}
+
+.pie__arriba {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.pie__marca { max-width: 320px; }
+.pie__marca h2 { font-size: 24px; }
+.pie__marca p { margin-top: 12px; font-size: 14px; color: var(--crema); }
+
+.pie__columnas { display: flex; gap: 56px; flex-wrap: wrap; }
+.pie__columnas div { display: flex; flex-direction: column; gap: 10px; }
+.pie__columnas h3 {
+  font-family: var(--fuente-texto);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: none;
+  margin-bottom: 4px;
+}
+.pie__columnas a { font-size: 12px; color: var(--crema); opacity: .85; }
+.pie__columnas a:hover { color: var(--ambar); opacity: 1; }
+
+.pie__legal { padding-top: 24px; font-size: 12px; color: var(--crema); opacity: .85; }

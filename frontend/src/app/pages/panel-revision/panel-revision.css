@@ -1,0 +1,150 @@
+.panel { padding-top: 40px; }
+
+.panel__equipo { margin-bottom: 14px; background: var(--teal-oscuro); color: var(--crema); }
+.panel h1 { margin-top: 10px; font-size: clamp(34px, 4.4vw, 52px); }
+.panel__texto { max-width: 640px; margin-top: 12px; font-size: 14px; color: var(--texto-suave); }
+
+.panel__cifras {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 28px;
+  background: var(--teal-oscuro);
+  border-radius: var(--radio);
+}
+.panel__cifras div { display: flex; flex-direction: column; gap: 2px; }
+.panel__cifras dd {
+  margin: 0;
+  font-family: var(--fuente-titulo);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+}
+.panel__cifras dt { font-size: 12px; color: var(--texto-suave); }
+
+.panel__titulo { margin-top: 48px; font-size: 28px; }
+
+.panel__herramientas { display: flex; gap: 16px; margin-top: 20px; }
+.panel__buscador {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  color: var(--ambar);
+}
+.panel__buscador input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 14px;
+}
+.panel__buscador input::placeholder { color: var(--texto-suave); }
+.panel__herramientas select {
+  height: 44px;
+  padding: 0 14px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.panel__resumen { margin: 14px 0 16px; font-size: 12px; color: var(--texto-suave); }
+
+.tabla-caja { overflow: hidden; }
+.tabla { width: 100%; border-collapse: collapse; }
+.tabla th {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--borde);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+.tabla td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--borde);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.tabla tbody tr:last-child td { border-bottom: 0; }
+.tabla tbody tr:hover { background: rgba(23, 64, 74, .25); }
+
+.tabla__titulo { display: block; font-size: 14px; font-weight: 700; }
+.tabla__titulo:hover { color: var(--ambar); }
+.tabla__fecha { display: block; margin-top: 2px; font-size: 11px; color: var(--texto-suave); }
+.tabla__fecha a { color: var(--ambar); }
+.tabla__fecha a:hover { text-decoration: underline; }
+.tabla__votos { font-weight: 700; color: var(--ambar); }
+.tabla__acciones { display: flex; gap: 8px; justify-content: flex-end; }
+
+.decision {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--fuente-texto);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.decision--aprobar { border-color: var(--teal); background: var(--teal-oscuro); color: var(--crema); }
+.decision--aprobar:hover { background: var(--teal); }
+.decision--rechazar { border-color: #8a4a45; color: #e58b82; }
+.decision--rechazar:hover { background: rgba(229, 139, 130, .12); }
+
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.panel__paginas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+@media (max-width: 860px) {
+  .panel__herramientas { flex-direction: column; }
+  .tabla thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .tabla, .tabla tbody, .tabla tr, .tabla td { display: block; }
+  .tabla tr { padding: 18px 20px; border-bottom: 1px solid var(--borde); }
+  .tabla tbody tr:last-child { border-bottom: 0; }
+  .tabla td { padding: 4px 0; border: 0; }
+  .tabla td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-size: 11px;
+    color: var(--texto-suave);
+  }
+  .tabla td[data-label="Propuesta"]::before { content: none; }
+  .tabla td[data-label="Propuesta"] { margin-bottom: 6px; }
+  .tabla__acciones { justify-content: flex-start; margin-top: 12px; }
+}
+@media (max-width: 560px) {
+  .panel__cifras { padding: 22px; gap: 8px; }
+  .panel__cifras dd { font-size: 28px; }
+}

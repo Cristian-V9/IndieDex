@@ -1,0 +1,42 @@
+<header class="navbar">
+    <div class="contenedor navbar__fila">
+
+        <a routerLink="/" class="logo" aria-label="IndieDex, ir al inicio">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 3h6l2.5 7h-11L9 3z" />
+                <path d="M12 10v7" />
+                <path d="M8 21h8" />
+                <path d="M10 17h4" />
+            </svg>
+            <span class="logo__texto">INDIE<span class="logo__dex">DEX</span></span>
+        </a>
+
+        <label class="buscador">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5" />
+                <path d="M16 16l4 4" />
+            </svg>
+            <input type="search" placeholder="Buscar juegos, guías, objetos…" aria-label="Buscar en IndieDex">
+        </label>
+
+        <nav class="navbar__enlaces" aria-label="Principal">
+            <a routerLink="/juegos" routerLinkActive="activo">Juegos</a>
+            <a routerLink="/sugerencias" routerLinkActive="activo">Sugerencias</a>
+            <a href="#donar" class="donar">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
+                </svg>
+                Donar
+            </a>
+        </nav>
+
+        <div class="navbar__sesion">
+            <a routerLink="/login" class="enlace-sesion">Iniciar sesión</a>
+            <a routerLink="/registro" class="boton boton--oscuro">Registrarse</a>
+        </div>
+    </div>
+
+</header>

@@ -1,0 +1,75 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--fondo);
+  border-bottom: 1px solid var(--borde);
+}
+
+.navbar__fila {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  min-height: 72px;
+}
+
+
+.logo { display: flex; align-items: center; gap: 8px; color: var(--ambar); }
+.logo__texto {
+  font-family: var(--fuente-titulo);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--crema);
+  letter-spacing: .01em;
+}
+.logo__dex { color: var(--ambar); }
+
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 1 360px;
+  padding: 0 14px;
+  height: 40px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  color: var(--ambar);
+}
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 14px;
+}
+.buscador input::placeholder { color: var(--texto-suave); }
+
+
+.navbar__enlaces { display: flex; align-items: center; gap: 24px; margin-left: auto; }
+.navbar__enlaces a { font-size: 14px; font-weight: 500; color: var(--crema); }
+.navbar__enlaces a:hover,
+.navbar__enlaces a.activo { color: var(--ambar); }
+.donar { display: inline-flex; align-items: center; gap: 6px; color: var(--ambar) !important; }
+
+
+.navbar__sesion { display: flex; align-items: center; gap: 16px; }
+.enlace-sesion { font-size: 14px; color: var(--texto-suave); }
+.enlace-sesion:hover { color: var(--crema); }
+
+
+@media (max-width: 1000px) {
+  .navbar__fila { flex-wrap: wrap; gap: 12px 20px; padding-block: 12px; }
+  .logo { order: 1; }
+  .navbar__sesion { order: 2; margin-left: auto; }
+  .navbar__enlaces { order: 3; flex: 1 1 100%; margin-left: 0; }
+  .buscador { order: 4; flex: 1 1 100%; }
+}
+@media (max-width: 560px) {
+  .navbar__enlaces { gap: 16px; }
+  .enlace-sesion { display: none; }
+}

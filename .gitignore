@@ -1,0 +1,26 @@
+# ===== General =====
+.DS_Store
+Thumbs.db
+*.log
+
+# ===== IDEs =====
+.idea/
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+
+# ===== Backend (Spring Boot / Maven) =====
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+# Configuración local con contraseñas: NO se sube
+backend/src/main/resources/application-local.properties
+.env
+
+# ===== Frontend (Angular) =====
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
