@@ -208,3 +208,11 @@
         align-items: flex-start;
     }
 }
+.chip--activo {
+    background: var(--ambar);
+    color: var(--fondo);
+}
+
+.chip--activo:hover {
+    background: var(--ambar);
+}

@@ -202,3 +202,9 @@
   .guia { grid-template-columns: 44px 1fr; }
   .guia__flecha { display: none; }
 }
+
+/* ---------- Pestañas de logros, objetos y personajes ---------- */
+.guia--ficha { grid-template-columns: 44px 1fr; align-items: start; }
+.pista { margin-top: 6px; font-size: 13px; color: var(--texto-suave); }
+.pista summary { cursor: pointer; color: var(--ambar); font-size: 12px; }
+.pista p { margin-top: 6px; }

@@ -22,42 +22,60 @@
     <h2>Crea tu cuenta</h2>
     <p class="acceso__subtitulo">Gratis, sin prisas y sin anuncios invasivos.</p>
 
-    <div class="campo">
-      <label for="reg-usuario">Nombre de usuario</label>
-      <input id="reg-usuario" type="text" placeholder="Tu nombre en la comunidad">
-      <p class="campo__ayuda">Entre 3 y 24 caracteres. Será público.</p>
-    </div>
-
-    <div class="campo">
-      <label for="reg-correo">Correo electrónico</label>
-      <input id="reg-correo" type="email" placeholder="tu@correo.com">
-      <p class="campo__ayuda">Solo lo usaremos para tu cuenta.</p>
-    </div>
-
-    <div class="campo">
-      <label for="reg-clave">Contraseña</label>
-      <div class="campo__clave">
-        <input id="reg-clave" type="password" placeholder="Crea una contraseña segura">
-        <button type="button" aria-label="Mostrar contraseña"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <form (ngSubmit)="crear()" novalidate>
+      <div class="campo">
+        <label for="reg-usuario">Nombre de usuario</label>
+        <input id="reg-usuario" name="nombreUsuario" type="text" placeholder="Tu nombre en la comunidad"
+          autocomplete="username" maxlength="24" [(ngModel)]="datos.nombreUsuario">
+        @if (errores()['nombreUsuario']) { <p class="campo__error">{{ errores()['nombreUsuario'] }}</p> }
+        @else { <p class="campo__ayuda">Entre 3 y 24 caracteres. Será público.</p> }
       </div>
-      <p class="campo__ayuda">Al menos 8 caracteres.</p>
-    </div>
 
-    <div class="campo">
-      <label for="reg-clave2">Confirmar contraseña</label>
-      <input id="reg-clave2" type="password" placeholder="Repite tu contraseña">
-    </div>
+      <div class="campo">
+        <label for="reg-correo">Correo electrónico</label>
+        <input id="reg-correo" name="email" type="email" placeholder="tu@correo.com" autocomplete="email"
+          [(ngModel)]="datos.email">
+        @if (errores()['email']) { <p class="campo__error">{{ errores()['email'] }}</p> }
+        @else { <p class="campo__ayuda">Solo lo usaremos para tu cuenta.</p> }
+      </div>
 
-    <label class="recordar">
-      <input type="checkbox">
-      Acepto los Términos y la Política de privacidad de IndieDex.
-    </label>
+      <div class="campo">
+        <label for="reg-clave">Contraseña</label>
+        <div class="campo__clave">
+          <input id="reg-clave" name="password" [type]="verClave() ? 'text' : 'password'" placeholder="Crea una contraseña segura"
+            autocomplete="new-password" [(ngModel)]="datos.password">
+          <button type="button" [attr.aria-label]="verClave() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            (click)="verClave.set(!verClave())"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        @if (errores()['password']) { <p class="campo__error">{{ errores()['password'] }}</p> }
+        @else { <p class="campo__ayuda">Al menos 8 caracteres.</p> }
+      </div>
 
-    <button type="button" class="boton boton--primario entrar">Crear cuenta</button>
-    <p class="acceso__nota">Te enviaremos un correo para verificar tu cuenta antes de publicar.</p>
+      <div class="campo">
+        <label for="reg-clave2">Confirmar contraseña</label>
+        <input id="reg-clave2" name="confirmar" [type]="verClave() ? 'text' : 'password'" placeholder="Repite tu contraseña"
+          autocomplete="new-password" [(ngModel)]="datos.confirmar">
+        @if (errores()['confirmar']) { <p class="campo__error">{{ errores()['confirmar'] }}</p> }
+      </div>
+
+      <label class="recordar">
+        <input type="checkbox" name="acepto" [(ngModel)]="datos.acepto">
+        Acepto los Términos y la Política de privacidad de IndieDex.
+      </label>
+      @if (errores()['acepto']) { <p class="campo__error">{{ errores()['acepto'] }}</p> }
+
+      @if (error() && !errores()['nombreUsuario'] && !errores()['email'] && !errores()['password']) {
+        <p class="aviso aviso--error">{{ error() }}</p>
+      }
+
+      <button type="submit" class="boton boton--primario entrar" [disabled]="enviando()">
+        {{ enviando() ? 'Creando tu cuenta…' : 'Crear cuenta' }}
+      </button>
+    </form>
+    <p class="acceso__nota">Al crear tu cuenta entrarás directamente a IndieDex.</p>
 
     <div class="acceso__aparte acceso__aparte--centro">
-      <a href="/login" class="olvido">¿Ya tienes cuenta? Iniciar sesión →</a>
+      <a routerLink="/login" [queryParams]="{ volver: volver() }" class="olvido">¿Ya tienes cuenta? Iniciar sesión →</a>
     </div>
   </div>
 

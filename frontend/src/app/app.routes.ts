@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { equipoGuard, sesionGuard } from './core/guards';
 import { Inicio } from './pages/inicio/inicio';
 import { Catalogo } from './pages/catalogo/catalogo';
 import { Juego } from './pages/juego/juego';
@@ -17,7 +18,7 @@ export const routes: Routes = [
   { path: 'sugerencias', component: Sugerencias, title: 'Sugerencias · IndieDex' },
   { path: 'login', component: Login, title: 'Iniciar sesión · IndieDex' },
   { path: 'registro', component: Registro, title: 'Crear cuenta · IndieDex' },
-  { path: 'perfil', component: Perfil, title: 'Mi perfil · IndieDex' },
-  { path: 'revision', component: PanelRevision, title: 'Panel de revisión · IndieDex' },
+  { path: 'perfil', component: Perfil, canActivate: [sesionGuard], title: 'Mi perfil · IndieDex' },
+  { path: 'revision', component: PanelRevision, canActivate: [equipoGuard], title: 'Panel de revisión · IndieDex' },
   { path: '**', redirectTo: '' },
 ];

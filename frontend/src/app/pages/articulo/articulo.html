@@ -1,197 +1,141 @@
+@if (error()) {
+  <section class="contenedor migas">
+    <p class="aviso aviso--error">{{ error() }}</p>
+    <a routerLink="/juegos" class="boton boton--oscuro">Volver al catálogo</a>
+  </section>
+}
+
+@if (articulo(); as a) {
 <nav class="contenedor migas" aria-label="Ruta de navegación">
-  <a href="/juegos">Juegos</a> / <a href="/juegos/dredge">Dredge</a> / <a href="/juegos/dredge">Guías</a> / <span
-    aria-current="page">Tu primera noche</span>
+  <a routerLink="/juegos">Juegos</a> / <a [routerLink]="['/juegos', a.juegoSlug]">{{ a.juegoTitulo }}</a> /
+  <a [routerLink]="['/juegos', a.juegoSlug]">Guías</a> / <span aria-current="page">{{ a.titulo }}</span>
 </nav>
 
-
 <header class="contenedor articulo-cabecera">
-  <p class="eyebrow">Dredge · Guía para principiantes</p>
-  <h1>Tu primera noche en el mar</h1>
-  <p class="articulo-subtitulo">
-    Aprende a pescar, cuidar tu barco y volver a casa antes de que la oscuridad cambie las reglas.
-  </p>
+  <p class="eyebrow">{{ a.juegoTitulo }} · {{ a.categoria }}</p>
+  <h1>{{ a.titulo }}</h1>
+  <p class="articulo-subtitulo">{{ a.resumen }}</p>
 
   <div class="autor">
-    <span class="avatar" aria-hidden="true">ML</span>
+    <span class="avatar" aria-hidden="true">{{ iniciales(a.autor.nombreUsuario) }}</span>
     <div class="autor__datos">
-      <strong>MarineroLunar y la comunidad</strong>
-      <span>Actualizada el 5 oct 2026 · 8 min de lectura</span>
+      <strong>{{ a.autor.nombreUsuario }} y la comunidad</strong>
+      <span>Actualizada el {{ a.fechaActualizacion | date: 'd MMM y' }} · {{ a.minutosLectura }} min de lectura</span>
     </div>
-    <span class="etiqueta etiqueta--publicado autor__estado">Publicado</span>
+    <span class="etiqueta autor__estado" [class.etiqueta--publicado]="a.estado === 'PUBLICADO'"
+      [class.etiqueta--revision]="a.estado !== 'PUBLICADO'">{{ textoEstado(a.estado) }}</span>
   </div>
 </header>
 
-
-<figure class="contenedor figura">
-  <div class="figura__imagen">
-    <img src="images/articulo-primera-noche.jpg"
-      alt="El puerto de Médula Mayor al anochecer, con un barco amarrado al muelle">
-  </div>
-  <figcaption>El puerto de Médula Mayor será tu refugio durante las primeras jornadas.</figcaption>
-</figure>
-
+@if (a.imagen) {
+  <figure class="contenedor figura">
+    <div class="figura__imagen">
+      <img [src]="a.imagen" [alt]="a.imagenDescripcion ?? a.titulo">
+    </div>
+    @if (a.imagenDescripcion) {
+      <figcaption>{{ a.imagenDescripcion }}</figcaption>
+    }
+  </figure>
+}
 
 <div class="contenedor articulo-diseno">
-
   <article class="texto">
-
-    <p class="texto__intro">
-      En Dredge, cada salida al mar es una pequeña decisión entre la curiosidad y la prudencia.
-      Durante las primeras jornadas no necesitas ir lejos: aprende cómo avanza el tiempo,
-      reconoce la costa y reserva siempre unas horas para volver. Esta guía te acompaña desde
-      el primer muelle hasta tu primera mejora.
-    </p>
-
-    <h2 id="antes-de-zarpar">01 / Antes de zarpar</h2>
-    <p>
-      Al llegar a Médula Mayor, habla con el alcalde y revisa el equipo de tu barco. La caña inicial
-      permite capturar peces costeros; no sirve para todos los puntos de pesca que verás en el mapa.
-      Consulta el tipo de agua de cada especie antes de instalar una nueva caña.
-    </p>
-    <p>
-      El tiempo avanza al navegar, pescar o dragar, pero puedes detenerte para consultar el mapa y
-      organizar la bodega. Aprovecha esas pausas: colocar bien cada captura evita que un pez grande
-      ocupe el espacio de varios pequeños.
-    </p>
-
-    <aside class="consejo">
-      <p class="consejo__titulo">Consejo del puerto</p>
-      <p>
-        Fija el regreso para antes de las 18:00. Es una referencia prudente, no una obligación: la
-        distancia al puerto y la velocidad del barco determinan tu margen real.
-      </p>
-    </aside>
-
-    <h2 id="pesca-cerca-de-casa">02 / Pesca cerca de casa</h2>
-    <p>
-      Busca los bancos de peces en las aguas que rodean las Médulas. Los círculos y las aves sobre la
-      superficie te ayudan a localizarlos. Acércate, comprueba que tienes el equipo adecuado y completa
-      el minijuego de pesca. Una captura bien ejecutada consume menos tiempo.
-    </p>
-    <p>
-      No intentes llenar la bodega a cualquier precio. Deja espacio para capturas valiosas y vigila la
-      hora después de cada banco. Los puntos agotados se recuperan con el tiempo: explorar otra zona
-      suele ser mejor que esperar en el mismo lugar.
-    </p>
-
-    <figure class="figura figura--interna">
-      <div class="figura__imagen">
-        <img src="images/articulo-pesca.jpg"
-          alt="Un pequeño barco pesquero junto a la costa, frente a un faro entre la niebla">
-      </div>
-      <figcaption>Pesca junto a la costa mientras aprendes a reconocer los puntos de referencia.</figcaption>
-    </figure>
-
-    <h2 id="el-regreso-al-puerto">03 / El regreso al puerto</h2>
-    <p>
-      Usa el faro como referencia y evita navegar en línea recta hacia una costa que no conoces: puede
-      haber rocas en el camino. Por la noche aumenta el peligro y la falta de descanso eleva el pánico.
-      Si el trayecto se complica, busca un muelle cercano para descansar.
-    </p>
-    <p>
-      Al atracar, vende la pesca al pescadero antes de dormir. Las capturas pierden frescura con el paso
-      del tiempo. Después, visita el astillero para reparar cualquier daño: una casilla dañada de la
-      bodega puede inutilizar el equipo instalado en ella.
-    </p>
-
-    <h2 id="tus-primeras-mejoras">04 / Tus primeras mejoras</h2>
-    <p>
-      Invierte según tu forma de jugar. Estas tres prioridades te permiten pescar más variedad, regresar
-      con margen y aprovechar mejor cada jornada.
-    </p>
-
-    <dl class="mejoras">
-      <div>
-        <dt>Motor</dt>
-        <dd>Más velocidad significa más tiempo para explorar y un regreso menos apurado.</dd>
-      </div>
-      <div>
-        <dt>Caña versátil</dt>
-        <dd>Amplía los tipos de agua en los que puedes pescar antes de buscar nuevas especies.</dd>
-      </div>
-      <div>
-        <dt>Luz</dt>
-        <dd>Mejora la visibilidad nocturna, pero no sustituye el descanso ni una ruta segura.</dd>
-      </div>
-    </dl>
-
-    <footer class="texto__pie">
-      <p class="texto__fuentes">
-        Fuentes: experiencia de la comunidad en Dredge, versión base; descripciones del equipo dentro del
-        juego. Última revisión: 5 de octubre de 2026.
-      </p>
-      <a href="/articulo/2" class="texto__siguiente">Sigue leyendo: Mejora tu barco paso a paso →</a>
-    </footer>
+    <!-- El HTML del artículo viene del backend; Angular lo limpia (sanitiza) antes de mostrarlo -->
+    <div #contenido class="contenido-articulo" [innerHTML]="a.contenido"></div>
 
     <section class="comentarios" aria-labelledby="titulo-comentarios">
-      <h2 id="titulo-comentarios">Conversación del puerto · 3</h2>
+      <h2 id="titulo-comentarios">Conversación del puerto · {{ totalComentarios() }}</h2>
       <p class="comentarios__intro">
         Comparte un consejo o una duda. Marca los destripes y cuida a quienes acaban de llegar.
       </p>
 
       <div class="formulario">
         <label for="comentario">Tu comentario</label>
-        <textarea id="comentario" rows="4"
+        <textarea #nuevo id="comentario" rows="4" maxlength="2000"
           placeholder="¿Qué te hubiera gustado saber en tu primera partida?"></textarea>
-        <button type="button" class="boton boton--oscuro">Inicia sesión para comentar</button>
+        @if (auth.conectado()) {
+          <button type="button" class="boton boton--oscuro" [disabled]="enviando()" (click)="comentar(nuevo)">
+            {{ enviando() ? 'Publicando…' : 'Publicar comentario' }}
+          </button>
+        } @else {
+          <a routerLink="/login" [queryParams]="{ volver: '/articulo/' + a.id }" class="boton boton--oscuro">Inicia sesión para comentar</a>
+        }
+        @if (errorComentario()) {
+          <p class="aviso aviso--error">{{ errorComentario() }}</p>
+        }
       </div>
 
       <ul class="lista-comentarios">
+        @for (c of comentarios(); track c.id) {
+          <li class="comentario">
+            <span class="avatar" aria-hidden="true">{{ iniciales(c.autor.nombreUsuario) }}</span>
+            <div>
+              <div class="comentario__cabecera">
+                <strong>{{ c.autor.nombreUsuario }}</strong>
+                <time [attr.datetime]="c.fechaCreacion">{{ c.fechaCreacion | date: 'd MMM y · HH:mm' }}</time>
+              </div>
+              <p>{{ c.contenido }}</p>
+              <div class="comentario__acciones">
+                @if (auth.conectado()) {
+                  <button type="button" class="comentario__responder" (click)="respondiendoA.set(respondiendoA() === c.id ? null : c.id)">Responder</button>
+                }
+                @if (puedeBorrar(c)) {
+                  <button type="button" class="comentario__responder comentario__borrar" (click)="borrar(c)">
+                    {{ confirmarBorrado() === c.id ? '¿Seguro? Sí, borrar' : 'Borrar' }}
+                  </button>
+                }
+              </div>
 
-        <li class="comentario">
-          <span class="avatar" aria-hidden="true">LV</span>
-          <div>
-            <div class="comentario__cabecera">
-              <strong>LunaVerde</strong>
-              <time>6 oct 2026 · 18:42</time>
+              @if (respondiendoA() === c.id) {
+                <div class="formulario formulario--respuesta">
+                  <textarea #respuesta rows="3" maxlength="2000" [attr.aria-label]="'Responder a ' + c.autor.nombreUsuario"
+                    [placeholder]="'Responde a ' + c.autor.nombreUsuario + '…'"></textarea>
+                  <button type="button" class="boton boton--oscuro" [disabled]="enviando()" (click)="comentar(respuesta, c.id)">Responder</button>
+                </div>
+              }
+
+              @if (c.respuestas.length) {
+                <ul class="lista-comentarios lista-comentarios--respuestas">
+                  @for (r of c.respuestas; track r.id) {
+                    <li class="comentario">
+                      <span class="avatar" aria-hidden="true">{{ iniciales(r.autor.nombreUsuario) }}</span>
+                      <div>
+                        <div class="comentario__cabecera">
+                          <strong>{{ r.autor.nombreUsuario }}</strong>
+                          <time [attr.datetime]="r.fechaCreacion">{{ r.fechaCreacion | date: 'd MMM y · HH:mm' }}</time>
+                        </div>
+                        <p>{{ r.contenido }}</p>
+                        @if (puedeBorrar(r)) {
+                          <button type="button" class="comentario__responder comentario__borrar" (click)="borrar(r)">
+                            {{ confirmarBorrado() === r.id ? '¿Seguro? Sí, borrar' : 'Borrar' }}
+                          </button>
+                        }
+                      </div>
+                    </li>
+                  }
+                </ul>
+              }
             </div>
-            <p>¡Esta guía me salvó la primera partida! Me quedaba pescando hasta demasiado tarde. Volver con margen
-              cambia todo.</p>
-            <a href="#" class="comentario__responder">Responder</a>
-          </div>
-        </li>
-
-        <li class="comentario">
-          <span class="avatar" aria-hidden="true">NB</span>
-          <div>
-            <div class="comentario__cabecera">
-              <strong>NieblaBaja</strong>
-              <time>5 oct 2026 · 21:15</time>
-            </div>
-            <p>Otro consejo: vende la pesca antes de descansar para que no pierda frescura. Es fácil olvidarse al llegar
-              al puerto.</p>
-            <a href="#" class="comentario__responder">Responder</a>
-          </div>
-        </li>
-
-        <li class="comentario">
-          <span class="avatar" aria-hidden="true">ML</span>
-          <div>
-            <div class="comentario__cabecera">
-              <strong>MarineroLunar</strong>
-              <time>5 oct 2026 · 22:03</time>
-            </div>
-            <p>Buen apunte, NieblaBaja. Lo añadimos al apartado del regreso. Gracias por ayudar a mejorar la guía.</p>
-            <a href="#" class="comentario__responder">Responder</a>
-          </div>
-        </li>
-
+          </li>
+        } @empty {
+          <li class="aviso">Aún no hay comentarios. ¡Abre la conversación!</li>
+        }
       </ul>
     </section>
-
   </article>
-
 
   <aside class="indice tarjeta" aria-label="Índice de la guía">
     <h2>En esta guía</h2>
     <ol>
-      <li><a href="/articulo/1#antes-de-zarpar" class="indice__activo">01 &nbsp;Antes de zarpar</a></li>
-      <li><a href="/articulo/1#pesca-cerca-de-casa">02 &nbsp;Pesca cerca de casa</a></li>
-      <li><a href="/articulo/1#el-regreso-al-puerto">03 &nbsp;El regreso al puerto</a></li>
-      <li><a href="/articulo/1#tus-primeras-mejoras">04 &nbsp;Tus primeras mejoras</a></li>
+      @for (s of indice(); track s.id) {
+        <li><a [routerLink]="[]" [fragment]="s.id">{{ s.texto }}</a></li>
+      }
     </ol>
-    <p class="indice__nota">Sin destripes de la historia. Incluye consejos para la versión base del juego.</p>
-    <a href="/sugerencias" class="boton boton--oscuro">Sugerir una corrección</a>
+    <p class="indice__nota">Sin destripes de la historia. Si ves un error, avísanos con una corrección.</p>
+    <a routerLink="/sugerencias" class="boton boton--oscuro">Sugerir una corrección</a>
   </aside>
-
 </div>
+
+<app-anuncio />
+<app-bloque-donacion />
+}

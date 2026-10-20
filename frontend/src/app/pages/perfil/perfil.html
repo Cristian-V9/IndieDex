@@ -1,124 +1,145 @@
 <section class="contenedor perfil">
   <p class="eyebrow">Tu rincón en la comunidad</p>
 
+  @if (error()) {
+    <p class="aviso aviso--error">{{ error() }}</p>
+  }
+
+  @if (perfil(); as p) {
   <div class="tarjeta perfil__cabecera">
-    <span class="perfil__avatar" aria-hidden="true">ML</span>
+    <span class="perfil__avatar" aria-hidden="true">{{ iniciales(p.usuario.nombreUsuario) }}</span>
     <div class="perfil__datos">
-      <h1>MarineroLunar</h1>
-      <p class="perfil__bio">Pescando historias y compartiendo rutas. Dredge me trajo; la comunidad hizo que me quedara.</p>
-      <p class="perfil__meta">Miembro desde septiembre de 2026 · Colaborador</p>
+      <h1>{{ p.usuario.nombreUsuario }}</h1>
+      @if (editando()) {
+        <div class="perfil__editar">
+          <label for="bio" class="oculto">Biografía</label>
+          <textarea id="bio" rows="3" maxlength="280" [(ngModel)]="biografia"
+            placeholder="Cuéntale a la comunidad qué juegas"></textarea>
+          <div class="perfil__editar-botones">
+            <button type="button" class="boton boton--primario" (click)="guardarBiografia()">Guardar</button>
+            <button type="button" class="boton boton--oscuro" (click)="editando.set(false)">Cancelar</button>
+          </div>
+        </div>
+      } @else {
+        <p class="perfil__bio">{{ p.usuario.biografia || 'Aún no has escrito tu biografía.' }}</p>
+      }
+      <p class="perfil__meta">Miembro desde {{ p.usuario.fechaRegistro | date: "MMMM 'de' y" }} · {{ textoRol(p.usuario.rol) }}</p>
     </div>
-    <button type="button" class="boton boton--oscuro">Editar perfil</button>
+    @if (!editando()) {
+      <button type="button" class="boton boton--oscuro" (click)="empezarEdicion()">Editar perfil</button>
+    }
   </div>
 
   <dl class="perfil__cifras">
-    <div><dt>sugerencias</dt><dd>6</dd></div>
-    <div><dt>votos emitidos</dt><dd>18</dd></div>
-    <div><dt>comentarios</dt><dd>12</dd></div>
+    <div><dt>sugerencias</dt><dd>{{ p.totalSugerencias }}</dd></div>
+    <div><dt>votos emitidos</dt><dd>{{ p.totalVotos }}</dd></div>
+    <div><dt>comentarios</dt><dd>{{ p.totalComentarios }}</dd></div>
   </dl>
 
   <nav class="perfil__pestanas" aria-label="Secciones del perfil">
-    <a href="/perfil" class="pestana pestana--activa" aria-current="page">Mi actividad</a>
-    <a href="/perfil" class="pestana">Sugerencias</a>
-    <a href="/perfil" class="pestana">Votos</a>
-    <a href="/perfil" class="pestana">Comentarios</a>
+    @for (t of pestanas; track t.id) {
+      <a href="#" class="pestana" [class.pestana--activa]="pestana() === t.id"
+        [attr.aria-current]="pestana() === t.id ? 'page' : null"
+        (click)="$event.preventDefault(); pestana.set(t.id)">{{ t.texto }}</a>
+    }
   </nav>
 
   <div class="perfil__diseno">
-
     <div class="perfil__actividad">
 
-      <section class="bloque" aria-labelledby="mis-sugerencias">
-        <div class="bloque__cabecera">
-          <h2 id="mis-sugerencias">Mis sugerencias</h2>
-          <a href="/sugerencias">Ver las 6 →</a>
-        </div>
-        <ul class="lista">
-          <li class="tarjeta fila">
-            <span class="etiqueta etiqueta--revision">Revisión</span>
-            <h3>Guía de pesca de aberraciones</h3>
-            <p>Dredge · 186 votos · 3 oct 2026</p>
-          </li>
-          <li class="tarjeta fila">
-            <span class="etiqueta etiqueta--votos">Votos</span>
-            <h3>Tabla de motores y consumo de espacio</h3>
-            <p>Dredge · 46 votos · 1 oct 2026</p>
-          </li>
-          <li class="tarjeta fila">
-            <span class="etiqueta etiqueta--publicado">Publicado</span>
-            <h3>Corregir la ubicación del muelle de la Cuenca</h3>
-            <p>Dredge · 28 votos · 28 sep 2026</p>
-          </li>
-        </ul>
-      </section>
+      @if (ver('sugerencias')) {
+        <section class="bloque" aria-labelledby="mis-sugerencias">
+          <div class="bloque__cabecera">
+            <h2 id="mis-sugerencias">Mis sugerencias</h2>
+            @if (pestana() === 'actividad' && sugerencias().length > 3) {
+              <a href="#" (click)="$event.preventDefault(); pestana.set('sugerencias')">Ver las {{ p.totalSugerencias }} →</a>
+            }
+          </div>
+          <ul class="lista">
+            @for (s of sugerencias().slice(0, limite()); track s.id) {
+              <li class="tarjeta fila">
+                <span class="etiqueta" [class]="claseEstado(s.estado)">{{ textoEstado(s.estado) }}</span>
+                <h3>{{ s.titulo }}</h3>
+                <p>@if (s.juegoTitulo) { {{ s.juegoTitulo }} · }{{ s.totalVotos }} {{ s.totalVotos === 1 ? 'voto' : 'votos' }} · {{ s.fechaCreacion | date: 'd MMM y' }}</p>
+                @if (s.notaRevision) {
+                  <p class="fila__nota">Nota del equipo: {{ s.notaRevision }}</p>
+                }
+              </li>
+            } @empty {
+              <li class="aviso">Todavía no has enviado propuestas. <a routerLink="/sugerencias">Propón la primera →</a></li>
+            }
+          </ul>
+        </section>
+      }
 
-      <section class="bloque" aria-labelledby="ideas-apoyo">
-        <div class="bloque__cabecera">
-          <h2 id="ideas-apoyo">Ideas que apoyo</h2>
-          <a href="/sugerencias">Ver los 18 votos →</a>
-        </div>
-        <ul class="lista">
-          <li class="tarjeta fila fila--apoyo">
-            <svg class="apoyo__check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-            <div>
-              <h3>Abrir la wiki de Hollow Knight</h3>
-              <p>248 votos · Tu voto está incluido</p>
-            </div>
-            <button type="button" class="accion">Retirar</button>
-          </li>
-          <li class="tarjeta fila fila--apoyo">
-            <svg class="apoyo__check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-            <div>
-              <h3>Mapa de muelles seguros</h3>
-              <p>97 votos · Tu voto está incluido</p>
-            </div>
-            <button type="button" class="accion">Retirar</button>
-          </li>
-          <li class="tarjeta fila fila--apoyo">
-            <svg class="apoyo__check" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-            <div>
-              <h3>Guía de las primeras mejoras del barco</h3>
-              <p>82 votos · Tu voto está incluido</p>
-            </div>
-            <button type="button" class="accion">Retirar</button>
-          </li>
-        </ul>
-      </section>
+      @if (ver('votos')) {
+        <section class="bloque" aria-labelledby="ideas-apoyo">
+          <div class="bloque__cabecera">
+            <h2 id="ideas-apoyo">Ideas que apoyo</h2>
+            @if (pestana() === 'actividad' && votos().length > 3) {
+              <a href="#" (click)="$event.preventDefault(); pestana.set('votos')">Ver los {{ p.totalVotos }} votos →</a>
+            }
+          </div>
+          <ul class="lista">
+            @for (s of votos().slice(0, limite()); track s.id) {
+              <li class="tarjeta fila fila--apoyo">
+                <div>
+                  <h3>{{ s.titulo }}</h3>
+                  <p>{{ s.totalVotos }} {{ s.totalVotos === 1 ? 'voto' : 'votos' }} · Tu voto está incluido</p>
+                </div>
+                @if (!cerrada(s)) {
+                  <button type="button" class="accion" (click)="retirarVoto(s)">Retirar</button>
+                }
+              </li>
+            } @empty {
+              <li class="aviso">Aún no has votado ninguna propuesta.</li>
+            }
+          </ul>
+        </section>
+      }
 
-      <section class="bloque" aria-labelledby="conversaciones">
-        <div class="bloque__cabecera">
-          <h2 id="conversaciones">Conversaciones que continuó</h2>
-          <a href="/articulo/1">Ver los 12 comentarios →</a>
-        </div>
-        <ul class="lista">
-          <li class="tarjeta conversacion">
-            <h3>Tu primera noche en el mar</h3>
-            <p class="conversacion__texto">Buen apunte. Lo añadimos al apartado del regreso. Gracias por ayudar a mejorar la guía.</p>
-            <p class="conversacion__meta">5 oct 2026 · 22:03 · <a href="/articulo/1">Ver conversación →</a></p>
-          </li>
-          <li class="tarjeta conversacion">
-            <h3>Mejora tu barco paso a paso</h3>
-            <p class="conversacion__texto">Yo prioricé el motor antes que las luces. Tener margen para volver al puerto me ayudó mucho.</p>
-            <p class="conversacion__meta">3 oct 2026 · 16:20 · <a href="/articulo/1">Ver conversación →</a></p>
-          </li>
-        </ul>
-      </section>
-
+      @if (ver('comentarios')) {
+        <section class="bloque" aria-labelledby="conversaciones">
+          <div class="bloque__cabecera">
+            <h2 id="conversaciones">Conversaciones que continué</h2>
+            @if (pestana() === 'actividad' && comentarios().length > 3) {
+              <a href="#" (click)="$event.preventDefault(); pestana.set('comentarios')">Ver los {{ p.totalComentarios }} comentarios →</a>
+            }
+          </div>
+          <ul class="lista">
+            @for (c of comentarios().slice(0, limite()); track c.id) {
+              <li class="tarjeta conversacion">
+                <h3>{{ c.articuloTitulo }}</h3>
+                <p class="conversacion__texto">{{ c.contenido }}</p>
+                <p class="conversacion__meta">{{ c.fechaCreacion | date: 'd MMM y · HH:mm' }} · <a [routerLink]="['/articulo', c.articuloId]">Ver conversación →</a></p>
+              </li>
+            } @empty {
+              <li class="aviso">Todavía no has comentado ningún artículo.</li>
+            }
+          </ul>
+        </section>
+      }
     </div>
 
     <aside class="tarjeta perfil__lateral">
       <h2>Pequeños pasos, gran aporte</h2>
-      <span class="etiqueta etiqueta--publicado">Farero de la comunidad</span>
-      <p>Ya tienes una sugerencia publicada. Gracias por convertir una buena idea en conocimiento compartido.</p>
-
+      @if (p.sugerenciasPublicadas > 0) {
+        <span class="etiqueta etiqueta--publicado">Farero de la comunidad</span>
+        <p>Ya tienes {{ p.sugerenciasPublicadas === 1 ? 'una sugerencia publicada' : p.sugerenciasPublicadas + ' sugerencias publicadas' }}. Gracias por convertir una buena idea en conocimiento compartido.</p>
+      } @else {
+        <span class="etiqueta">Grumete</span>
+        <p>Cuando una de tus propuestas llegue a la wiki, te convertirás en Farero de la comunidad.</p>
+      }
       <div class="perfil__wiki">
-        <p class="perfil__etiqueta">Tu wiki más visitada</p>
-        <h3>Dredge</h3>
-        <a href="/juegos/dredge" class="boton boton--oscuro">Volver a la wiki</a>
+        <p class="perfil__etiqueta">Tu wiki favorita</p>
+        <h3>{{ wikiFavorita().titulo }}</h3>
+        <a [routerLink]="['/juegos', wikiFavorita().slug]" class="boton boton--oscuro">Volver a la wiki</a>
       </div>
-
-      <a href="/perfil" class="perfil__privacidad">Privacidad y notificaciones →</a>
+      @if (auth.esEquipo()) {
+        <a routerLink="/revision" class="perfil__privacidad">Ir al panel de revisión →</a>
+      }
+      <button type="button" class="perfil__privacidad perfil__salir" (click)="auth.cerrarSesion()">Cerrar sesión →</button>
     </aside>
-
   </div>
+  }
 </section>

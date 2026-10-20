@@ -216,3 +216,19 @@
   .mejoras div { grid-template-columns: 1fr; gap: 4px; }
   .texto h2 { font-size: 24px; }
 }
+
+/* ---------- Comentarios: acciones y respuestas ---------- */
+.comentario__acciones { display: flex; gap: 16px; }
+button.comentario__responder {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: var(--fuente-texto);
+  cursor: pointer;
+}
+.comentario__borrar { color: #e58b82; }
+.formulario--respuesta { margin-top: 12px; }
+.formulario--respuesta textarea { min-height: 80px; }
+.lista-comentarios--respuestas { margin-top: 12px; padding-left: 4px; border-left: 2px solid var(--borde); }
+.lista-comentarios--respuestas .comentario { padding: 12px 0 12px 14px; border-bottom: 0; }
+.formulario .aviso { margin-top: 12px; }

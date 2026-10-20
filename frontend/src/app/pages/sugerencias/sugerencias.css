@@ -228,3 +228,10 @@
   .sugerencia { grid-template-columns: 48px 1fr; gap: 14px; padding: 16px; }
   .voto-boton { width: 48px; }
 }
+/* ---------- Añadidos ---------- */
+.voto-boton:disabled { cursor: default; opacity: .7; }
+.voto-boton:disabled:hover { border-color: var(--borde); }
+.accion--cerrada { cursor: default; color: var(--texto-suave); }
+.accion--cerrada:hover { text-decoration: none; }
+.sugerencia__nota { margin-top: 6px; font-size: 12px; font-style: italic; color: var(--texto-suave); }
+.nueva-sugerencia form { display: contents; }

@@ -148,3 +148,22 @@
   .panel__cifras { padding: 22px; gap: 8px; }
   .panel__cifras dd { font-size: 28px; }
 }
+
+/* ---------- Formulario de decisión ---------- */
+.tabla__decision td { background: var(--fondo); }
+.tabla__decision label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--texto-suave); }
+.tabla__decision strong { color: var(--ambar); }
+.tabla__decision textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 14px;
+  resize: vertical;
+}
+.tabla__decision-botones { display: flex; gap: 8px; margin-top: 10px; }
+.tabla__vacia { padding: 24px; text-align: center; color: var(--texto-suave); }
+.panel__resumen a { color: var(--ambar); }

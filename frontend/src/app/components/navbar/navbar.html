@@ -12,19 +12,52 @@
             <span class="logo__texto">INDIE<span class="logo__dex">DEX</span></span>
         </a>
 
-        <label class="buscador">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
-                stroke-linecap="round" aria-hidden="true">
-                <circle cx="11" cy="11" r="6.5" />
-                <path d="M16 16l4 4" />
-            </svg>
-            <input type="search" placeholder="Buscar juegos, guías, objetos…" aria-label="Buscar en IndieDex">
-        </label>
+        <div class="buscador-caja">
+            <label class="buscador">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="6.5" />
+                    <path d="M16 16l4 4" />
+                </svg>
+                <input type="search" placeholder="Buscar juegos, guías, objetos…" aria-label="Buscar en IndieDex"
+                    [value]="texto()" (input)="escribir($any($event.target).value)"
+                    (keydown.enter)="buscarEnCatalogo()" (keydown.escape)="cerrar()"
+                    (focus)="abierto.set(true)" (blur)="alSalir()">
+            </label>
+
+            @if (abierto() && resultados(); as r) {
+                <div class="buscador__resultados tarjeta" role="listbox">
+                    @if (!hayResultados(r)) {
+                        <p class="buscador__vacio">Sin resultados para «{{ texto() }}»</p>
+                    }
+                    @for (j of r.juegos; track j.id) {
+                        <a class="buscador__item" [routerLink]="['/juegos', j.slug]" (click)="cerrar()">
+                            <span class="buscador__tipo">Juego</span>{{ j.titulo }}
+                        </a>
+                    }
+                    @for (a of r.articulos; track a.id) {
+                        <a class="buscador__item" [routerLink]="['/articulo', a.id]" (click)="cerrar()">
+                            <span class="buscador__tipo">Guía</span>{{ a.titulo }}
+                        </a>
+                    }
+                    @for (o of r.objetos; track o.id) {
+                        <a class="buscador__item" [routerLink]="['/juegos', o.juegoSlug]" [queryParams]="{ seccion: 'objetos' }" (click)="cerrar()">
+                            <span class="buscador__tipo">Objeto</span>{{ o.nombre }}
+                        </a>
+                    }
+                    @for (p of r.personajes; track p.id) {
+                        <a class="buscador__item" [routerLink]="['/juegos', p.juegoSlug]" [queryParams]="{ seccion: 'personajes' }" (click)="cerrar()">
+                            <span class="buscador__tipo">Personaje</span>{{ p.nombre }}
+                        </a>
+                    }
+                </div>
+            }
+        </div>
 
         <nav class="navbar__enlaces" aria-label="Principal">
             <a routerLink="/juegos" routerLinkActive="activo">Juegos</a>
             <a routerLink="/sugerencias" routerLinkActive="activo">Sugerencias</a>
-            <a href="#donar" class="donar">
+            <a href="#donar" class="donar" (click)="irADonar($event)">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
@@ -34,8 +67,19 @@
         </nav>
 
         <div class="navbar__sesion">
-            <a routerLink="/login" class="enlace-sesion">Iniciar sesión</a>
-            <a routerLink="/registro" class="boton boton--oscuro">Registrarse</a>
+            @if (auth.usuario(); as u) {
+                @if (auth.esEquipo()) {
+                    <a routerLink="/revision" routerLinkActive="activo" class="enlace-sesion">Panel</a>
+                }
+                <a routerLink="/perfil" class="navbar__usuario" title="Mi perfil">
+                    <span class="navbar__avatar" aria-hidden="true">{{ iniciales(u.nombreUsuario) }}</span>
+                    <span class="navbar__nombre">{{ u.nombreUsuario }}</span>
+                </a>
+                <button type="button" class="enlace-sesion navbar__salir" (click)="auth.cerrarSesion()">Salir</button>
+            } @else {
+                <a routerLink="/login" class="enlace-sesion">Iniciar sesión</a>
+                <a routerLink="/registro" class="boton boton--oscuro">Registrarse</a>
+            }
         </div>
     </div>
 

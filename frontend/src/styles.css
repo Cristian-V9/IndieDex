@@ -253,3 +253,112 @@ img {
     grid-template-columns: 1fr;
   }
 }
+
+/* =====================================================================
+   Añadidos al conectar con el backend
+   ===================================================================== */
+
+.etiqueta--rechazada {
+  background: rgba(229, 139, 130, .14);
+  color: #e58b82;
+}
+
+/* Mensajes de estado (errores, listas vacías, confirmaciones) */
+.aviso {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie);
+  font-size: 14px;
+  color: var(--texto-suave);
+  list-style: none;
+}
+.aviso--error { border-color: #8a4a45; background: rgba(229, 139, 130, .08); color: #e58b82; }
+.aviso--exito { border-color: var(--teal); background: rgba(63, 138, 134, .12); color: var(--crema); }
+
+/* Error debajo de un campo de formulario */
+.campo__error { margin-top: 6px; font-size: 12px; color: #e58b82; }
+
+/* Mientras se recargan datos */
+.cargando { opacity: .55; transition: opacity .2s; }
+
+.boton:disabled { opacity: .6; cursor: progress; }
+
+/* ---------- Contenido HTML de los artículos (viene del backend) ----------
+   Va en el CSS global porque Angular no aplica los estilos de un componente
+   al HTML insertado con [innerHTML]. */
+.contenido-articulo p {
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #dcd7ca;
+}
+.contenido-articulo .texto__intro { margin-top: 0; font-size: 17px; }
+.contenido-articulo h2 { margin-top: 44px; font-size: 28px; }
+.contenido-articulo h2 + p { margin-top: 12px; }
+
+.contenido-articulo .consejo {
+  margin-top: 24px;
+  padding: 18px 22px;
+  background: #33291d;
+  border-left: 3px solid var(--ambar);
+  border-radius: 4px 10px 10px 4px;
+}
+.contenido-articulo .consejo p { margin-top: 6px; font-size: 15px; color: var(--crema); }
+.contenido-articulo .consejo .consejo__titulo {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ambar);
+}
+
+.contenido-articulo .figura { margin: 28px 0 0; }
+.contenido-articulo .figura__imagen {
+  position: relative;
+  aspect-ratio: 3.3 / 1;
+  overflow: hidden;
+  background: linear-gradient(160deg, #123447, #06141f);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+.contenido-articulo .figura__imagen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.contenido-articulo .figura figcaption { margin-top: 8px; font-size: 11px; color: var(--texto-suave); }
+
+.contenido-articulo .mejoras { display: flex; flex-direction: column; gap: 10px; margin: 20px 0 0; }
+.contenido-articulo .mejoras div {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  padding: 14px 20px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+}
+.contenido-articulo .mejoras dt { font-size: 14px; font-weight: 700; color: var(--ambar); }
+.contenido-articulo .mejoras dd { margin: 0; font-size: 14px; }
+
+.contenido-articulo .texto__fuentes {
+  margin-top: 36px;
+  padding-block: 18px;
+  border-block: 1px solid var(--borde);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--texto-suave);
+}
+
+@media (max-width: 1000px) {
+  .contenido-articulo .figura__imagen { aspect-ratio: 16 / 9; }
+}
+@media (max-width: 640px) {
+  .contenido-articulo .mejoras div { grid-template-columns: 1fr; gap: 4px; }
+  .contenido-articulo h2 { font-size: 24px; }
+}

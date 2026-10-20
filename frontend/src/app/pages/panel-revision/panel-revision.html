@@ -13,9 +13,9 @@
   </div>
 
   <dl class="panel__cifras">
-    <div><dd>12</dd><dt>pendientes</dt></div>
-    <div><dd>4</dd><dt>en revisión</dt></div>
-    <div><dd>8</dd><dt>publicadas este mes</dt></div>
+    <div><dd>{{ resumen()?.pendientes ?? '—' }}</dd><dt>pendientes</dt></div>
+    <div><dd>{{ resumen()?.enRevision ?? '—' }}</dd><dt>en revisión</dt></div>
+    <div><dd>{{ resumen()?.publicadasEsteMes ?? '—' }}</dd><dt>publicadas este mes</dt></div>
   </dl>
 
   <h2 class="panel__titulo">Propuestas pendientes</h2>
@@ -23,18 +23,25 @@
   <div class="panel__herramientas">
     <div class="panel__buscador">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
-      <input type="search" placeholder="Buscar título o autor…" aria-label="Buscar propuestas por título o autor">
+      <input #caja type="search" placeholder="Buscar título o autor…" aria-label="Buscar propuestas por título o autor"
+        (keydown.enter)="filtrarTexto(caja.value)" (search)="filtrarTexto(caja.value)">
     </div>
-    <select aria-label="Filtrar por tipo">
-      <option>Todos los tipos</option>
-      <option>Nueva wiki</option>
-      <option>Nueva guía</option>
-      <option>Mejora</option>
-      <option>Corrección</option>
+    <select aria-label="Filtrar por tipo" (change)="filtrarTipo($any($event.target).value)">
+      @for (t of tipos; track t.valor) {
+        <option [value]="t.valor">{{ t.texto }}</option>
+      }
     </select>
   </div>
 
-  <p class="panel__resumen">Mostrando 5 de 12 · Orden: más votadas · Última sincronización: hoy, 09:14</p>
+  @if (pagina(); as p) {
+    <p class="panel__resumen">
+      Mostrando {{ p.contenido.length }} de {{ p.totalElementos }} · Orden: más votadas
+      @if (sincronizado()) { · Última sincronización: hoy, {{ sincronizado() | date: 'HH:mm' }} }
+    </p>
+  }
+
+  @if (error()) { <p class="aviso aviso--error">{{ error() }}</p> }
+  @if (aviso()) { <p class="aviso aviso--exito">{{ aviso() }}</p> }
 
   <div class="tarjeta tabla-caja">
     <table class="tabla">
@@ -49,123 +56,76 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td data-label="Propuesta">
-            <a href="/sugerencias" class="tabla__titulo">Abrir la wiki de Hollow Knight</a>
-            <span class="tabla__fecha">4 oct 2026 · <a href="/sugerencias">Ver detalle →</a></span>
-          </td>
-          <td data-label="Autor">LunaVerde</td>
-          <td data-label="Tipo">Nueva wiki</td>
-          <td data-label="Votos" class="tabla__votos">248</td>
-          <td data-label="Estado"><span class="etiqueta etiqueta--votos">Votos</span></td>
-          <td>
-            <div class="tabla__acciones">
-              <button type="button" class="decision decision--aprobar" aria-label="Aprobar «Abrir la wiki de Hollow Knight»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Aprobar
-              </button>
-              <button type="button" class="decision decision--rechazar" aria-label="Rechazar «Abrir la wiki de Hollow Knight»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-                Rechazar
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td data-label="Propuesta">
-            <a href="/sugerencias" class="tabla__titulo">Guía de pesca de aberraciones</a>
-            <span class="tabla__fecha">3 oct 2026 · <a href="/sugerencias">Ver detalle →</a></span>
-          </td>
-          <td data-label="Autor">MarineroLunar</td>
-          <td data-label="Tipo">Guía</td>
-          <td data-label="Votos" class="tabla__votos">186</td>
-          <td data-label="Estado"><span class="etiqueta etiqueta--revision">Revisión</span></td>
-          <td>
-            <div class="tabla__acciones">
-              <button type="button" class="decision decision--aprobar" aria-label="Aprobar «Guía de pesca de aberraciones»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Aprobar
-              </button>
-              <button type="button" class="decision decision--rechazar" aria-label="Rechazar «Guía de pesca de aberraciones»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-                Rechazar
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td data-label="Propuesta">
-            <a href="/sugerencias" class="tabla__titulo">Añadir Stardew Valley al catálogo</a>
-            <span class="tabla__fecha">2 oct 2026 · <a href="/sugerencias">Ver detalle →</a></span>
-          </td>
-          <td data-label="Autor">SemillaAzul</td>
-          <td data-label="Tipo">Nueva wiki</td>
-          <td data-label="Votos" class="tabla__votos">142</td>
-          <td data-label="Estado"><span class="etiqueta etiqueta--sugerencia">Sugerencia</span></td>
-          <td>
-            <div class="tabla__acciones">
-              <button type="button" class="decision decision--aprobar" aria-label="Aprobar «Añadir Stardew Valley al catálogo»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Aprobar
-              </button>
-              <button type="button" class="decision decision--rechazar" aria-label="Rechazar «Añadir Stardew Valley al catálogo»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-                Rechazar
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td data-label="Propuesta">
-            <a href="/sugerencias" class="tabla__titulo">Mapa de muelles seguros</a>
-            <span class="tabla__fecha">1 oct 2026 · <a href="/sugerencias">Ver detalle →</a></span>
-          </td>
-          <td data-label="Autor">NieblaBaja</td>
-          <td data-label="Tipo">Mejora</td>
-          <td data-label="Votos" class="tabla__votos">97</td>
-          <td data-label="Estado"><span class="etiqueta etiqueta--votos">Votos</span></td>
-          <td>
-            <div class="tabla__acciones">
-              <button type="button" class="decision decision--aprobar" aria-label="Aprobar «Mapa de muelles seguros»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Aprobar
-              </button>
-              <button type="button" class="decision decision--rechazar" aria-label="Rechazar «Mapa de muelles seguros»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-                Rechazar
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td data-label="Propuesta">
-            <a href="/sugerencias" class="tabla__titulo">Tabla de motores y espacio</a>
-            <span class="tabla__fecha">1 oct 2026 · <a href="/sugerencias">Ver detalle →</a></span>
-          </td>
-          <td data-label="Autor">MarineroLunar</td>
-          <td data-label="Tipo">Nueva guía</td>
-          <td data-label="Votos" class="tabla__votos">46</td>
-          <td data-label="Estado"><span class="etiqueta etiqueta--revision">Revisión</span></td>
-          <td>
-            <div class="tabla__acciones">
-              <button type="button" class="decision decision--aprobar" aria-label="Aprobar «Tabla de motores y espacio»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-                Aprobar
-              </button>
-              <button type="button" class="decision decision--rechazar" aria-label="Rechazar «Tabla de motores y espacio»">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-                Rechazar
-              </button>
-            </div>
-          </td>
-        </tr>
+        @for (s of pagina()?.contenido ?? []; track s.id) {
+          <tr>
+            <td data-label="Propuesta">
+              <span class="tabla__titulo">{{ s.titulo }}</span>
+              <span class="tabla__fecha">{{ s.fechaCreacion | date: 'd MMM y' }}@if (s.juegoTitulo) { · {{ s.juegoTitulo }} }</span>
+            </td>
+            <td data-label="Autor">{{ s.autor.nombreUsuario }}</td>
+            <td data-label="Tipo">{{ textoTipo(s.tipo) }}</td>
+            <td data-label="Votos" class="tabla__votos">{{ s.totalVotos }}</td>
+            <td data-label="Estado"><span class="etiqueta" [class]="claseEstado(s.estado)">{{ textoEstado(s.estado) }}</span></td>
+            <td>
+              <div class="tabla__acciones">
+                <button type="button" class="decision decision--aprobar" [attr.aria-label]="'Aprobar «' + s.titulo + '»'"
+                  (click)="abrir(s, 'aprobar')">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                  Aprobar
+                </button>
+                <button type="button" class="decision decision--rechazar" [attr.aria-label]="'Rechazar «' + s.titulo + '»'"
+                  (click)="abrir(s, 'rechazar')">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                  Rechazar
+                </button>
+              </div>
+            </td>
+          </tr>
+          @if (decidiendo()?.id === s.id) {
+            <tr class="tabla__decision">
+              <td colspan="6">
+                <label [for]="'nota-' + s.id">
+                  @if (decidiendo()?.accion === 'aprobar') {
+                    Aprobar: pasa a <strong>{{ siguienteEstado() }}</strong>. Nota para {{ s.autor.nombreUsuario }} (opcional)
+                  } @else {
+                    Rechazar: explica a {{ s.autor.nombreUsuario }} el motivo (obligatorio)
+                  }
+                </label>
+                <textarea #nota [id]="'nota-' + s.id" rows="2" maxlength="500"
+                  placeholder="Cada decisión deja una nota para su autor."></textarea>
+                <div class="tabla__decision-botones">
+                  <button type="button" class="decision"
+                    [class.decision--aprobar]="decidiendo()?.accion === 'aprobar'"
+                    [class.decision--rechazar]="decidiendo()?.accion === 'rechazar'"
+                    [disabled]="procesando()" (click)="confirmar(s, nota.value)">
+                    {{ procesando() ? 'Guardando…' : (decidiendo()?.accion === 'aprobar' ? 'Confirmar aprobación' : 'Confirmar rechazo') }}
+                  </button>
+                  <button type="button" class="decision" (click)="decidiendo.set(null)">Cancelar</button>
+                </div>
+              </td>
+            </tr>
+          }
+        } @empty {
+          <tr><td colspan="6" class="tabla__vacia">No hay propuestas pendientes con estos filtros. ¡Buen trabajo!</td></tr>
+        }
       </tbody>
     </table>
   </div>
 
-  <nav class="panel__paginas" aria-label="Paginación">
-    <span>Página 1 de 3</span>
-    <a href="/revision" class="boton boton--oscuro">Siguiente →</a>
-  </nav>
+  @if (pagina(); as p) {
+    @if (p.totalPaginas > 1) {
+      <nav class="panel__paginas" aria-label="Paginación">
+        @if (p.pagina > 0) {
+          <button type="button" class="boton boton--oscuro" (click)="cambiarPagina(-1)">← Anterior</button>
+        }
+        <span>Página {{ p.pagina + 1 }} de {{ p.totalPaginas }}</span>
+        @if (!p.ultima) {
+          <button type="button" class="boton boton--oscuro" (click)="cambiarPagina(1)">Siguiente →</button>
+        }
+      </nav>
+    }
+  }
+
+  <p class="panel__resumen"><a routerLink="/sugerencias">Ver todas las propuestas de la comunidad →</a></p>
 
 </section>

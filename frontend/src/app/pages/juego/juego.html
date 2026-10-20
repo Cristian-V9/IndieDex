@@ -1,16 +1,24 @@
 <!-- ============ RUTA DE NAVEGACIÓN ============ -->
 <nav class="contenedor migas" aria-label="Ruta de navegación">
-  <a href="/">Inicio</a> / <a href="/juegos">Juegos</a> / <span aria-current="page">Dredge</span>
+  <a routerLink="/">Inicio</a> / <a routerLink="/juegos">Juegos</a> / <span aria-current="page">{{ juego()?.titulo ?? slug() }}</span>
 </nav>
 
+@if (error()) {
+  <section class="contenedor">
+    <p class="aviso aviso--error">{{ error() }}</p>
+    <a routerLink="/juegos" class="boton boton--oscuro">Volver al catálogo</a>
+  </section>
+}
+
+@if (juego(); as j) {
 <!-- ============ BANNER DEL JUEGO ============ -->
 <section class="contenedor">
   <div class="juego-hero">
-    <img src="images/Banner.jpg" alt="Un barco pesquero frente a un faro entre la niebla, en Dredge">
+    <img [src]="j.imagenBanner ?? j.imagenPortada" [alt]="'Imagen de ' + j.titulo">
     <div class="juego-hero__texto">
-      <span class="etiqueta etiqueta--publicado">Wiki abierta</span>
-      <h1>Dredge</h1>
-      <p>Aguas tranquilas. Secretos profundos. Todo lo que necesitas para navegar este inquietante archipiélago.</p>
+      <span class="etiqueta" [class.etiqueta--publicado]="j.estadoWiki === 'ABIERTA'">{{ textoWiki(j.estadoWiki) }}</span>
+      <h1>{{ j.titulo }}</h1>
+      <p>{{ j.eslogan }}</p>
     </div>
   </div>
 </section>
@@ -21,89 +29,134 @@
   <div class="juego-principal">
 
     <nav class="pestanas" aria-label="Secciones de la wiki">
-      <a href="#" class="pestana">Logros</a>
-      <a href="#" class="pestana">Objetos</a>
-      <a href="#" class="pestana">Personajes</a>
-      <a href="#" class="pestana pestana--activa" aria-current="page">Guías</a>
+      @for (p of pestanas; track p.id) {
+        <a [routerLink]="[]" [queryParams]="{ seccion: p.id === 'guias' ? null : p.id }" class="pestana"
+          [class.pestana--activa]="activa() === p.id" [attr.aria-current]="activa() === p.id ? 'page' : null">{{ p.texto }}</a>
+      }
     </nav>
 
-    <h2 class="juego-titulo">Guías para no perder el rumbo</h2>
-    <p class="juego-subtitulo">
-      Empieza con lo esencial o adéntrate en los secretos de Dredge.
-      Guías revisadas por la comunidad, sin destripes inesperados.
-    </p>
+    @switch (activa()) {
+      @case ('guias') {
+        <h2 class="juego-titulo">Guías para no perder el rumbo</h2>
+        <p class="juego-subtitulo">
+          Empieza con lo esencial o adéntrate en los secretos de {{ j.titulo }}.
+          Guías revisadas por la comunidad, sin destripes inesperados.
+        </p>
 
-    <div class="buscador-guias">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
-      <input type="search" placeholder="Buscar entre 32 guías de Dredge…" aria-label="Buscar guías de Dredge">
-    </div>
+        <div class="buscador-guias">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
+          <input #caja type="search" [placeholder]="'Buscar entre ' + j.totalArticulos + ' guías de ' + j.titulo + '…'"
+            [attr.aria-label]="'Buscar guías de ' + j.titulo"
+            (keydown.enter)="buscar(caja.value)" (search)="buscar(caja.value)">
+        </div>
 
-    <ul class="lista-guias">
+        @if (guias(); as g) {
+          @if (g.contenido.length === 0) {
+            <p class="aviso">
+              @if (buscarGuias()) { No hay guías que coincidan con «{{ buscarGuias() }}». }
+              @else { Esta wiki aún está en preparación. Vota en Sugerencias para que la abramos pronto. }
+            </p>
+          }
+          <ul class="lista-guias">
+            @for (a of g.contenido; track a.id) {
+              <li>
+                <a [routerLink]="['/articulo', a.id]" class="tarjeta guia">
+                  <span class="guia__icono">
+                    @switch (icono(a.categoria)) {
+                      @case ('brujula') { <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg> }
+                      @case ('barco') { <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 15h18l-2 4H5z"/><path d="M12 15V5l5 6h-5"/></svg> }
+                      @case ('gema') { <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12l3 5-9 11L3 9z"/><path d="M3 9h18"/></svg> }
+                      @case ('pez') { <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12c3-5 9-6 14-3l4-2v10l-4-2c-5 3-11 2-14-3z"/><circle cx="9" cy="11" r=".6"/></svg> }
+                      @default { <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></svg> }
+                    }
+                  </span>
+                  <span class="guia__cuerpo">
+                    <h3>{{ a.titulo }}</h3>
+                    <p>{{ a.resumen }}</p>
+                    <small>{{ a.categoria }} · {{ a.minutosLectura }} min · Actualizada el {{ a.fechaActualizacion | date: 'd MMM' }}</small>
+                  </span>
+                  <svg class="guia__flecha" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+              </li>
+            }
+          </ul>
 
-      <li>
-        <a href="/articulo/1" class="tarjeta guia">
-          <span class="guia__icono">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
-          </span>
-          <span class="guia__cuerpo">
-            <h3>Tu primera noche en el mar</h3>
-            <p>Todo lo que necesitas antes de alejarte del puerto.</p>
-            <small>Principiantes · 8 min · Actualizada el 5 oct</small>
-          </span>
-          <svg class="guia__flecha" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </li>
+          @if (g.totalPaginas > 1) {
+            <nav class="paginacion" aria-label="Paginación">
+              @for (n of paginas(); track n) {
+                <a href="#" class="paginacion__num" [class.paginacion__num--activa]="n === g.pagina"
+                  [attr.aria-current]="n === g.pagina ? 'page' : null" (click)="irAPagina($event, n)">{{ n + 1 }}</a>
+              }
+              @if (!g.ultima) {
+                <a href="#" class="paginacion__siguiente" (click)="irAPagina($event, g.pagina + 1)">Siguiente →</a>
+              }
+            </nav>
+          }
+        }
+      }
 
-      <li>
-        <a href="/articulo/2" class="tarjeta guia">
-          <span class="guia__icono">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 15h18l-2 4H5z"/><path d="M12 15V5l5 6h-5"/></svg>
-          </span>
-          <span class="guia__cuerpo">
-            <h3>Mejora tu barco paso a paso</h3>
-            <p>Motores, cañas y espacio: qué conviene comprar primero.</p>
-            <small>Progresión · 7 min · Actualizada el 5 oct</small>
-          </span>
-          <svg class="guia__flecha" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </li>
+      @case ('logros') {
+        <h2 class="juego-titulo">Logros</h2>
+        <p class="juego-subtitulo">Las pistas para conseguirlos están ocultas para evitar destripes: ábrelas solo si quieres.</p>
+        <ul class="lista-guias">
+          @for (l of logros(); track l.id) {
+            <li class="tarjeta guia guia--ficha">
+              <span class="guia__icono"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>
+              <span class="guia__cuerpo">
+                <h3>{{ l.nombre }}</h3>
+                <p>{{ l.descripcion }}</p>
+                @if (l.comoConseguirlo) {
+                  <details class="pista">
+                    <summary>Cómo conseguirlo</summary>
+                    <p>{{ l.comoConseguirlo }}</p>
+                  </details>
+                }
+              </span>
+            </li>
+          } @empty {
+            <li class="aviso">Todavía no hay logros documentados.</li>
+          }
+        </ul>
+      }
 
-      <li>
-        <a href="/articulo/3" class="tarjeta guia">
-          <span class="guia__icono">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12l3 5-9 11L3 9z"/><path d="M3 9h18"/></svg>
-          </span>
-          <span class="guia__cuerpo">
-            <h3>Las cinco reliquias del coleccionista</h3>
-            <p>Recorre el archipiélago y sigue el hilo de la historia.</p>
-            <small>Historia · 6 min · Actualizada el 5 oct</small>
-          </span>
-          <svg class="guia__flecha" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </li>
+      @case ('objetos') {
+        <h2 class="juego-titulo">Objetos</h2>
+        <p class="juego-subtitulo">Equipo, mejoras y objetos especiales de {{ j.titulo }}.</p>
+        <ul class="lista-guias">
+          @for (o of objetos(); track o.id) {
+            <li class="tarjeta guia guia--ficha">
+              <span class="guia__icono"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12l3 5-9 11L3 9z"/><path d="M3 9h18"/></svg></span>
+              <span class="guia__cuerpo">
+                <h3>{{ o.nombre }}</h3>
+                <p>{{ o.descripcion }}</p>
+                <small>{{ o.tipo }}@if (o.rareza) { · {{ o.rareza }} }@if (o.ubicacion) { · {{ o.ubicacion }} }</small>
+              </span>
+            </li>
+          } @empty {
+            <li class="aviso">Todavía no hay objetos documentados.</li>
+          }
+        </ul>
+      }
 
-      <li>
-        <a href="/articulo/4" class="tarjeta guia">
-          <span class="guia__icono">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12c3-5 9-6 14-3l4-2v10l-4-2c-5 3-11 2-14-3z"/><circle cx="9" cy="11" r=".6"/></svg>
-          </span>
-          <span class="guia__cuerpo">
-            <h3>Pesca de aberraciones</h3>
-            <p>Horarios, zonas y equipo para tus capturas más extrañas.</p>
-            <small>Pesca · 10 min · Actualizada el 5 oct</small>
-          </span>
-          <svg class="guia__flecha" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </li>
-
-    </ul>
-
-    <nav class="paginacion" aria-label="Paginación">
-      <a href="#" class="paginacion__num paginacion__num--activa" aria-current="page">1</a>
-      <a href="#" class="paginacion__num">2</a>
-      <a href="#" class="paginacion__num">3</a>
-      <a href="#" class="paginacion__siguiente">Siguiente →</a>
-    </nav>
+      @case ('personajes') {
+        <h2 class="juego-titulo">Personajes</h2>
+        <p class="juego-subtitulo">Quién es quién en {{ j.titulo }}.</p>
+        <ul class="lista-guias">
+          @for (p of personajes(); track p.id) {
+            <li class="tarjeta guia guia--ficha">
+              <span class="guia__icono"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span>
+              <span class="guia__cuerpo">
+                <h3>{{ p.nombre }}</h3>
+                <p>{{ p.historia }}</p>
+                <small>{{ p.rol }}@if (p.ubicacion) { · {{ p.ubicacion }} }</small>
+              </span>
+            </li>
+          } @empty {
+            <li class="aviso">Todavía no hay personajes documentados.</li>
+          }
+        </ul>
+      }
+    }
 
   </div>
 
@@ -111,31 +164,28 @@
     <h2>Ficha técnica</h2>
 
     <dl>
-      <dt>Desarrollador</dt>
-      <dd>Black Salt Games</dd>
-
-      <dt>Editor</dt>
-      <dd>Team17</dd>
-
-      <dt>Lanzamiento</dt>
-      <dd>30 de marzo de 2023</dd>
-
-      <dt>Género</dt>
-      <dd>Aventura, pesca, misterio</dd>
-
-      <dt>Modo de juego</dt>
-      <dd>Un jugador</dd>
-
-      <dt>Plataformas</dt>
-      <dd>PC · PS4 / PS5 · Xbox · Switch</dd>
+      @if (j.desarrollador) { <dt>Desarrollador</dt><dd>{{ j.desarrollador }}</dd> }
+      @if (j.editor) { <dt>Editor</dt><dd>{{ j.editor }}</dd> }
+      @if (j.fechaLanzamiento) { <dt>Lanzamiento</dt><dd>{{ j.fechaLanzamiento | date: "d 'de' MMMM 'de' y" }}</dd> }
+      @if (j.generos) { <dt>Género</dt><dd>{{ j.generos }}</dd> }
+      @if (j.modoJuego) { <dt>Modo de juego</dt><dd>{{ j.modoJuego }}</dd> }
+      @if (j.plataformas) { <dt>Plataformas</dt><dd>{{ j.plataformas }}</dd> }
     </dl>
 
     <div class="ficha__wiki">
-      <p>128 artículos · 24 colaboradores</p>
-      <p>Nuestra primera wiki, abierta a nuevas aportaciones.</p>
+      <p>{{ j.totalArticulos }} artículos · {{ j.totalColaboradores }} colaboradores</p>
+      @if (j.estadoWiki === 'ABIERTA') {
+        <p>Wiki abierta a nuevas aportaciones.</p>
+      } @else {
+        <p>Esta wiki se abrirá cuando la comunidad la apoye.</p>
+      }
     </div>
 
-    <a href="/sugerencias" class="boton boton--oscuro">Sugerir una mejora</a>
+    <a routerLink="/sugerencias" class="boton boton--oscuro">Sugerir una mejora</a>
   </aside>
 
 </section>
+
+<app-anuncio />
+<app-bloque-donacion />
+}

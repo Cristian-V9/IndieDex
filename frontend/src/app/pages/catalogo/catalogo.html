@@ -15,105 +15,69 @@
 
     <fieldset class="filtros__grupo">
       <legend>Género</legend>
-      <label class="filtro"><input type="checkbox" checked> Todos los géneros</label>
-      <label class="filtro"><input type="checkbox"> Aventura</label>
-      <label class="filtro"><input type="checkbox"> Metroidvania</label>
-      <label class="filtro"><input type="checkbox"> Simulación</label>
-      <label class="filtro"><input type="checkbox"> Plataformas</label>
-      <label class="filtro"><input type="checkbox"> Roguelike</label>
-      <label class="filtro"><input type="checkbox"> Cooperativo</label>
+      <label class="filtro">
+        <input type="radio" name="genero" [checked]="genero() === ''" (change)="genero.set('')"> Todos los géneros
+      </label>
+      @for (g of generos; track g) {
+        <label class="filtro">
+          <input type="radio" name="genero" [checked]="genero() === g" (change)="genero.set(g)"> {{ g }}
+        </label>
+      }
     </fieldset>
 
     <div class="filtros__grupo">
       <p class="filtros__titulo">Disponibilidad</p>
-      <button type="button" class="chip">Wiki abierta · 1</button>
-      <button type="button" class="chip">En preparación · 5</button>
+      <button type="button" class="chip" [class.chip--activo]="estado() === 'ABIERTA'"
+        [attr.aria-pressed]="estado() === 'ABIERTA'" (click)="alternarEstado('ABIERTA')">Wiki abierta · {{ abiertas() }}</button>
+      <button type="button" class="chip" [class.chip--activo]="estado() === 'EN_PREPARACION'"
+        [attr.aria-pressed]="estado() === 'EN_PREPARACION'" (click)="alternarEstado('EN_PREPARACION')">En preparación · {{ enPreparacion() }}</button>
     </div>
 
-    <a href="/juegos" class="filtros__limpiar">Limpiar filtros</a>
+    <a href="/juegos" class="filtros__limpiar" (click)="limpiar($event)">Limpiar filtros</a>
   </aside>
 
   <div class="catalogo__principal">
 
     <div class="buscador-catalogo">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
-      <input type="search" placeholder="Buscar un juego indie…" aria-label="Buscar un juego indie">
-      <button type="button" aria-label="Buscar">
+      <input #caja type="search" placeholder="Buscar un juego indie…" aria-label="Buscar un juego indie"
+        [value]="texto()" (keydown.enter)="texto.set(caja.value)" (search)="texto.set(caja.value)">
+      <button type="button" aria-label="Buscar" (click)="texto.set(caja.value)">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
     </div>
 
     <div class="catalogo__barra">
-      <p>6 juegos · 1 wiki abierta</p>
-      <select aria-label="Ordenar juegos">
-        <option>Destacados</option>
-        <option>Más artículos</option>
-        <option>Nombre (A–Z)</option>
+      <p>{{ visibles().length }} {{ visibles().length === 1 ? 'juego' : 'juegos' }} · {{ abiertas() }} {{ abiertas() === 1 ? 'wiki abierta' : 'wikis abiertas' }}</p>
+      <select aria-label="Ordenar juegos" [value]="orden()" (change)="orden.set($any($event.target).value)">
+        <option value="destacados">Destacados</option>
+        <option value="articulos">Más artículos</option>
+        <option value="nombre">Nombre (A–Z)</option>
       </select>
     </div>
 
-    <div class="rejilla-3">
+    @if (error()) {
+      <p class="aviso aviso--error">{{ error() }}</p>
+    } @else if (!cargando() && visibles().length === 0) {
+      <p class="aviso">No encontramos juegos con esos filtros. ¿Falta alguno? Propónlo en Sugerencias.</p>
+    }
 
-      <a href="/juegos/dredge" class="tarjeta carta">
-        <div class="carta__imagen"><img src="images/dredge.jpg" alt="Un barco pesquero frente a una isla con faro, en Dredge"></div>
-        <div class="carta__cuerpo">
-          <span class="etiqueta etiqueta--publicado">Wiki abierta</span>
-          <h3>Dredge</h3>
-          <p class="carta__autor">Black Salt Games</p>
-          <p class="carta__pie"><span class="carta__dato">128 artículos</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
-        </div>
-      </a>
-
-      <a href="/juegos" class="tarjeta carta">
-        <div class="carta__imagen"><img src="images/hollow-knight.jpg" alt="Un caballero diminuto en una caverna luminosa, en Hollow Knight"></div>
-        <div class="carta__cuerpo">
-          <span class="etiqueta">Próximamente</span>
-          <h3>Hollow Knight</h3>
-          <p class="carta__autor">Team Cherry</p>
-          <p class="carta__pie"><span>0 artículos · En preparación</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
-        </div>
-      </a>
-
-      <a href="/juegos" class="tarjeta carta">
-        <div class="carta__imagen"><img src="images/stardew-valley.jpg" alt="Una granja con cultivos y una casa al atardecer, en Stardew Valley"></div>
-        <div class="carta__cuerpo">
-          <span class="etiqueta">Próximamente</span>
-          <h3>Stardew Valley</h3>
-          <p class="carta__autor">ConcernedApe</p>
-          <p class="carta__pie"><span>0 artículos · En preparación</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
-        </div>
-      </a>
-
-      <a href="/juegos" class="tarjeta carta">
-        <div class="carta__imagen"><img src="images/celeste.jpg" alt="Un escalador en una montaña nevada al atardecer, en Celeste"></div>
-        <div class="carta__cuerpo">
-          <span class="etiqueta">Próximamente</span>
-          <h3>Celeste</h3>
-          <p class="carta__autor">Maddy Makes Games</p>
-          <p class="carta__pie"><span>0 artículos · En preparación</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
-        </div>
-      </a>
-
-      <a href="/juegos" class="tarjeta carta">
-        <div class="carta__imagen"><img src="images/hades.jpg" alt="Un guerrero frente a un portal en llamas, en Hades"></div>
-        <div class="carta__cuerpo">
-          <span class="etiqueta">Próximamente</span>
-          <h3>Hades</h3>
-          <p class="carta__autor">Supergiant Games</p>
-          <p class="carta__pie"><span>0 artículos · En preparación</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
-        </div>
-      </a>
-
-      <a href="/juegos" class="tarjeta carta">
-        <div class="carta__imagen"><img src="images/dead-cells.jpg" alt="Un guerrero de llama azul en una mazmorra, en Dead Cells"></div>
-        <div class="carta__cuerpo">
-          <span class="etiqueta">Próximamente</span>
-          <h3>Dead Cells</h3>
-          <p class="carta__autor">Motion Twin</p>
-          <p class="carta__pie"><span>0 artículos · En preparación</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
-        </div>
-      </a>
-
+    <div class="rejilla-3" [class.cargando]="cargando()">
+      @for (juego of visibles(); track juego.id) {
+        <a [routerLink]="['/juegos', juego.slug]" class="tarjeta carta">
+          <div class="carta__imagen"><img [src]="juego.imagenPortada" [alt]="'Portada de ' + juego.titulo"></div>
+          <div class="carta__cuerpo">
+            <span class="etiqueta" [class.etiqueta--publicado]="juego.estadoWiki === 'ABIERTA'">{{ textoWiki(juego.estadoWiki) }}</span>
+            <h3>{{ juego.titulo }}</h3>
+            <p class="carta__autor">{{ juego.desarrollador }}</p>
+            @if (juego.estadoWiki === 'ABIERTA') {
+              <p class="carta__pie"><span class="carta__dato">{{ juego.totalArticulos }} artículos</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
+            } @else {
+              <p class="carta__pie"><span>{{ juego.totalArticulos }} artículos · En preparación</span> <svg class="carta__flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></p>
+            }
+          </div>
+        </a>
+      }
     </div>
 
     <p class="catalogo__nota">
@@ -124,11 +88,14 @@
   </div>
 </section>
 
+<app-anuncio />
 
 <section class="contenedor invitacion">
   <div>
     <h2>¿Falta ese indie que no puedes dejar de jugar?</h2>
     <p>Propón una nueva wiki. Si la comunidad la apoya, el equipo prepara su espacio.</p>
   </div>
-  <a href="/sugerencias" class="boton boton--primario">Sugerir un juego</a>
+  <a routerLink="/sugerencias" class="boton boton--primario">Sugerir un juego</a>
 </section>
+
+<app-bloque-donacion />
