@@ -1,0 +1,67 @@
+<section class="contenedor gestion">
+  <p class="eyebrow">Espacio del equipo</p>
+  <div class="gestion__cabecera">
+    <div>
+      <h1>Juegos y contenido</h1>
+      <p class="gestion__texto">
+        Agrega juegos al catálogo y llena su wiki: guías, logros, objetos y personajes.
+        Al publicar la primera guía de un juego, su wiki pasa a «Wiki abierta».
+      </p>
+    </div>
+    <a routerLink="/equipo/juegos/nuevo" class="boton boton--primario">+ Nuevo juego</a>
+  </div>
+
+  <nav class="gestion__nav" aria-label="Secciones del equipo">
+    <a routerLink="/equipo/juegos" routerLinkActive="activo">Juegos y contenido</a>
+    <a routerLink="/revision" routerLinkActive="activo">Revisión de propuestas</a>
+  </nav>
+
+  @if (error()) { <p class="aviso aviso--error">{{ error() }}</p> }
+  @if (aviso()) { <p class="aviso aviso--exito">{{ aviso() }}</p> }
+
+  <table class="tabla-g">
+    <thead>
+      <tr>
+        <th scope="col">Juego</th>
+        <th scope="col">Wiki</th>
+        <th scope="col">Guías publicadas</th>
+        <th scope="col"><span class="oculto">Acciones</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (j of juegos(); track j.id) {
+        <tr>
+          <td>
+            <div class="tabla-g__juego">
+              @if (j.imagenPortada) { <img [src]="j.imagenPortada" alt=""> }
+              <div>
+                <strong>{{ j.titulo }}</strong>
+                <small>{{ j.desarrollador }} · /juegos/{{ j.slug }}</small>
+              </div>
+            </div>
+          </td>
+          <td><span class="etiqueta" [class.etiqueta--publicado]="j.estadoWiki === 'ABIERTA'">{{ textoWiki(j.estadoWiki) }}</span></td>
+          <td>{{ j.totalArticulos }}</td>
+          <td>
+            <div class="tabla-g__acciones">
+              <a [routerLink]="['/juegos', j.slug]" class="enlace-accion">Ver wiki</a>
+              <a [routerLink]="['/equipo/juegos', j.slug, 'editar']" class="enlace-accion">Editar</a>
+              <a routerLink="/equipo/articulos/nuevo" [queryParams]="{ juego: j.slug }" class="enlace-accion">+ Guía</a>
+              @if (auth.usuario()?.rol === 'ADMIN') {
+                <button type="button" class="enlace-accion enlace-accion--peligro" (click)="borrar(j)">
+                  {{ confirmarBorrado() === j.id ? '¿Borrar todo? Confirmar' : 'Borrar' }}
+                </button>
+              }
+            </div>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="4">Todavía no hay juegos en el catálogo.</td></tr>
+      }
+    </tbody>
+  </table>
+
+  @if (auth.usuario()?.rol !== 'ADMIN') {
+    <p class="campo-g__ayuda" style="margin-top: 16px">Solo un administrador puede borrar juegos.</p>
+  }
+</section>

@@ -110,6 +110,8 @@ export interface ArticuloDetalle extends ArticuloResumen {
 // ---------- Logros, objetos, personajes ----------
 export interface Logro {
   id: number;
+  juegoId?: number;
+  juegoSlug?: string;
   nombre: string;
   descripcion: string | null;
   comoConseguirlo: string | null;
@@ -118,6 +120,8 @@ export interface Logro {
 
 export interface Objeto {
   id: number;
+  juegoId?: number;
+  juegoSlug?: string;
   nombre: string;
   descripcion: string | null;
   tipo: string | null;
@@ -128,6 +132,8 @@ export interface Objeto {
 
 export interface Personaje {
   id: number;
+  juegoId?: number;
+  juegoSlug?: string;
   nombre: string;
   historia: string | null;
   rol: string | null;
@@ -208,3 +214,39 @@ export interface ResultadoBusqueda {
   objetos: (Objeto & { juegoSlug: string })[];
   personajes: (Personaje & { juegoSlug: string })[];
 }
+
+// ---------- Datos para crear o editar (solo EDITOR / ADMIN) ----------
+export interface JuegoDatos {
+  titulo: string;
+  slug: string | null;
+  eslogan: string | null;
+  descripcion: string | null;
+  imagenPortada: string | null;
+  imagenBanner: string | null;
+  desarrollador: string | null;
+  editor: string | null;
+  fechaLanzamiento: string | null;
+  generos: string | null;
+  modoJuego: string | null;
+  plataformas: string | null;
+  estadoWiki: EstadoWiki;
+}
+
+export interface ArticuloDatos {
+  juegoId: number | null;
+  titulo: string;
+  resumen: string | null;
+  contenido: string;
+  categoria: string | null;
+  imagen: string | null;
+  imagenDescripcion: string | null;
+  minutosLectura: number | null;
+  estado: EstadoArticulo;
+}
+
+export interface LogroDatos { juegoId: number | null; nombre: string; descripcion: string | null; comoConseguirlo: string | null; icono: string | null; }
+export interface ObjetoDatos { juegoId: number | null; nombre: string; descripcion: string | null; tipo: string | null; rareza: string | null; ubicacion: string | null; imagen: string | null; }
+export interface PersonajeDatos { juegoId: number | null; nombre: string; historia: string | null; rol: string | null; ubicacion: string | null; imagen: string | null; }
+
+/** Las tres pestañas de la wiki que se gestionan con el mismo formulario. */
+export type TipoContenido = 'logros' | 'objetos' | 'personajes';

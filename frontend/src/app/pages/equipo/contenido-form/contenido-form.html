@@ -1,0 +1,106 @@
+<section class="contenedor gestion">
+  <p class="gestion__migas"><a routerLink="/equipo/juegos">Juegos y contenido</a> / {{ id() ? 'Editar ' + nombres().singular : nombres().nuevo }}</p>
+  <div class="gestion__cabecera">
+    <div>
+      <h1>{{ id() ? 'Editar ' + nombres().singular : nombres().nuevo }}</h1>
+      <p class="gestion__texto">Aparece en la pestaña «{{ clase() === 'logros' ? 'Logros' : clase() === 'objetos' ? 'Objetos' : 'Personajes' }}» de la wiki del juego.</p>
+    </div>
+  </div>
+
+  <form class="formulario-g" (ngSubmit)="guardar()" novalidate>
+    <div class="tarjeta formulario-g__principal">
+      <div class="campo-g">
+        <label for="c-nombre">Nombre *</label>
+        <input id="c-nombre" name="nombre" maxlength="120" [(ngModel)]="datos.nombre">
+        @if (errores()['nombre']) { <span class="campo-g__error">{{ errores()['nombre'] }}</span> }
+      </div>
+
+      @switch (clase()) {
+        @case ('logros') {
+          <div class="campo-g">
+            <label for="c-desc">Descripción</label>
+            <textarea id="c-desc" name="descripcion" rows="3" [(ngModel)]="datos.descripcion" placeholder="Qué hay que lograr"></textarea>
+          </div>
+          <div class="campo-g">
+            <label for="c-como">Cómo conseguirlo</label>
+            <textarea id="c-como" name="comoConseguirlo" rows="4" [(ngModel)]="datos.comoConseguirlo"></textarea>
+            <span class="campo-g__ayuda">Se muestra oculto (desplegable) para evitar destripes.</span>
+          </div>
+        }
+        @case ('objetos') {
+          <div class="campo-g">
+            <label for="c-desc">Descripción</label>
+            <textarea id="c-desc" name="descripcion" rows="4" [(ngModel)]="datos.descripcion"></textarea>
+          </div>
+          <div class="fila-g">
+            <div class="campo-g">
+              <label for="c-tipo">Tipo</label>
+              <input id="c-tipo" name="tipo" maxlength="50" [(ngModel)]="datos.tipo" placeholder="Caña, Motor, Reliquia…">
+            </div>
+            <div class="campo-g">
+              <label for="c-rareza">Rareza</label>
+              <input id="c-rareza" name="rareza" maxlength="30" list="rarezas" [(ngModel)]="datos.rareza">
+              <datalist id="rarezas"><option value="Común"></option><option value="Poco común"></option><option value="Rara"></option><option value="Única"></option></datalist>
+            </div>
+          </div>
+        }
+        @case ('personajes') {
+          <div class="campo-g">
+            <label for="c-hist">Historia</label>
+            <textarea id="c-hist" name="historia" rows="5" [(ngModel)]="datos.historia"></textarea>
+          </div>
+          <div class="campo-g">
+            <label for="c-rol">Papel en el juego</label>
+            <input id="c-rol" name="rol" maxlength="60" [(ngModel)]="datos.rol" placeholder="Comerciante, Misterioso…">
+          </div>
+        }
+      }
+
+      @if (clase() !== 'logros') {
+        <div class="campo-g">
+          <label for="c-ubic">Ubicación</label>
+          <input id="c-ubic" name="ubicacion" maxlength="150" [(ngModel)]="datos.ubicacion" placeholder="Dónde se encuentra">
+        </div>
+      }
+    </div>
+
+    <aside class="tarjeta formulario-g__lateral">
+      <div class="campo-g">
+        <label for="c-juego">Juego *</label>
+        <select id="c-juego" name="juegoId" [(ngModel)]="datos.juegoId">
+          @for (j of juegos(); track j.id) { <option [ngValue]="j.id">{{ j.titulo }}</option> }
+        </select>
+      </div>
+
+      @if (clase() === 'logros') {
+        <div class="campo-g">
+          <label for="c-icono">Icono (ruta, opcional)</label>
+          <input id="c-icono" name="icono" maxlength="255" list="lista-imagenes" [(ngModel)]="datos.icono">
+        </div>
+      } @else {
+        <div class="campo-g">
+          <label for="c-img">Imagen (ruta, opcional)</label>
+          <input id="c-img" name="imagen" maxlength="255" list="lista-imagenes" [(ngModel)]="datos.imagen">
+          @if (datos.imagen) { <img class="imagen-previa" [src]="datos.imagen" alt="Vista previa"> }
+        </div>
+      }
+      <datalist id="lista-imagenes">
+        @for (img of imagenes; track img) { <option [value]="img"></option> }
+      </datalist>
+
+      @if (error()) { <p class="aviso aviso--error">{{ error() }}</p> }
+
+      <div class="acciones-g">
+        <button type="submit" class="boton boton--primario" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando…' : (id() ? 'Guardar cambios' : 'Crear ' + nombres().singular) }}
+        </button>
+        <a routerLink="/equipo/juegos" class="boton boton--oscuro">Cancelar</a>
+      </div>
+      @if (id()) {
+        <button type="button" class="enlace-accion enlace-accion--peligro" (click)="borrar()">
+          {{ confirmarBorrado() ? '¿Seguro? Confirmar' : 'Borrar ' + nombres().singular }}
+        </button>
+      }
+    </aside>
+  </form>
+</section>

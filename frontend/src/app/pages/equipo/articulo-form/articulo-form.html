@@ -1,0 +1,116 @@
+<section class="contenedor gestion">
+  <p class="gestion__migas"><a routerLink="/equipo/juegos">Juegos y contenido</a> / {{ id() ? 'Editar guía' : 'Nueva guía' }}</p>
+  <div class="gestion__cabecera">
+    <div>
+      <h1>{{ id() ? 'Editar guía' : 'Nueva guía' }}</h1>
+      <p class="gestion__texto">
+        Escribe el cuerpo con los bloques de la barra y revisa la vista previa.
+        Guárdala como borrador hasta que esté lista: solo el equipo ve los borradores.
+      </p>
+    </div>
+  </div>
+
+  @if (id() && !cargado() && !error()) { <p class="aviso">Cargando la guía…</p> }
+
+  <form class="formulario-g" (ngSubmit)="guardar()" novalidate>
+    <div class="tarjeta formulario-g__principal">
+      <div class="campo-g">
+        <label for="a-titulo">Título *</label>
+        <input id="a-titulo" name="titulo" maxlength="150" [(ngModel)]="datos.titulo" placeholder="Tu primera noche en el mar">
+        @if (errores()['titulo']) { <span class="campo-g__error">{{ errores()['titulo'] }}</span> }
+      </div>
+
+      <div class="campo-g">
+        <label for="a-resumen">Resumen</label>
+        <input id="a-resumen" name="resumen" maxlength="300" [(ngModel)]="datos.resumen"
+          placeholder="Una frase que aparece en las tarjetas y bajo el título">
+      </div>
+
+      <div class="campo-g">
+        <label for="editor">Contenido *</label>
+        <div class="barra-editor" role="toolbar" aria-label="Insertar bloque">
+          <button type="button" (click)="insertar('intro')">Introducción</button>
+          <button type="button" (click)="insertar('subtitulo')">Subtítulo</button>
+          <button type="button" (click)="insertar('parrafo')">Párrafo</button>
+          <button type="button" (click)="insertar('consejo')">Consejo</button>
+          <button type="button" (click)="insertar('imagen')">Imagen</button>
+          <button type="button" (click)="insertar('lista')">Lista de mejoras</button>
+          <button type="button" (click)="insertar('fuentes')">Fuentes</button>
+        </div>
+        <textarea #editor id="editor" name="contenido" class="codigo" [(ngModel)]="datos.contenido" spellcheck="false"></textarea>
+        @if (errores()['contenido']) { <span class="campo-g__error">{{ errores()['contenido'] }}</span> }
+        @else { <span class="campo-g__ayuda">Es HTML. Cada «Subtítulo» (&lt;h2&gt;) aparece en el índice «En esta guía».</span> }
+      </div>
+
+      <div class="campo-g">
+        <span class="campo-g__ayuda">Vista previa</span>
+        <div class="vista-previa contenido-articulo" [innerHTML]="datos.contenido"></div>
+      </div>
+    </div>
+
+    <aside class="tarjeta formulario-g__lateral">
+      <h2>Publicación</h2>
+
+      <div class="campo-g">
+        <label for="a-juego">Juego *</label>
+        <select id="a-juego" name="juegoId" [(ngModel)]="datos.juegoId">
+          @for (j of juegos(); track j.id) { <option [ngValue]="j.id">{{ j.titulo }}</option> }
+        </select>
+        @if (errores()['juegoId']) { <span class="campo-g__error">{{ errores()['juegoId'] }}</span> }
+      </div>
+
+      <div class="campo-g">
+        <label for="a-estado">Estado</label>
+        <select id="a-estado" name="estado" [(ngModel)]="datos.estado">
+          <option value="BORRADOR">Borrador (solo el equipo)</option>
+          <option value="EN_REVISION">En revisión (solo el equipo)</option>
+          <option value="PUBLICADO">Publicado (visible para todos)</option>
+        </select>
+      </div>
+
+      <div class="fila-g">
+        <div class="campo-g">
+          <label for="a-cat">Categoría</label>
+          <input id="a-cat" name="categoria" maxlength="50" list="categorias" [(ngModel)]="datos.categoria" placeholder="Principiantes">
+          <datalist id="categorias">
+            <option value="Principiantes"></option><option value="Progresión"></option><option value="Historia"></option>
+            <option value="Pesca"></option><option value="Personajes"></option><option value="Exploración"></option>
+          </datalist>
+        </div>
+        <div class="campo-g">
+          <label for="a-min">Minutos</label>
+          <input id="a-min" name="minutosLectura" type="number" min="1" max="180" [(ngModel)]="datos.minutosLectura">
+          @if (errores()['minutosLectura']) { <span class="campo-g__error">{{ errores()['minutosLectura'] }}</span> }
+        </div>
+      </div>
+
+      <div class="campo-g">
+        <label for="a-img">Imagen principal</label>
+        <input id="a-img" name="imagen" list="lista-imagenes" [(ngModel)]="datos.imagen" placeholder="images/articulo-pesca.jpg">
+        <datalist id="lista-imagenes">
+          @for (img of imagenes; track img) { <option [value]="img"></option> }
+        </datalist>
+        @if (datos.imagen) { <img class="imagen-previa" [src]="datos.imagen" alt="Vista previa de la imagen principal"> }
+      </div>
+
+      <div class="campo-g">
+        <label for="a-pie">Pie de la imagen</label>
+        <input id="a-pie" name="imagenDescripcion" maxlength="255" [(ngModel)]="datos.imagenDescripcion">
+      </div>
+
+      @if (error()) { <p class="aviso aviso--error">{{ error() }}</p> }
+
+      <div class="acciones-g">
+        <button type="submit" class="boton boton--primario" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando…' : (id() ? 'Guardar cambios' : 'Crear guía') }}
+        </button>
+        <a routerLink="/equipo/juegos" class="boton boton--oscuro">Cancelar</a>
+      </div>
+      @if (id()) {
+        <button type="button" class="enlace-accion enlace-accion--peligro" (click)="borrar()">
+          {{ confirmarBorrado() ? '¿Seguro? Se borran también sus comentarios' : 'Borrar guía' }}
+        </button>
+      }
+    </aside>
+  </form>
+</section>

@@ -33,10 +33,17 @@ public class ArticuloService {
     private final UsuarioRepository usuarioRepository;
     private final JuegoService juegoService;
 
-    /** Guías publicadas de un juego (pestaña "Guías"), con búsqueda y paginación. */
-    public PaginaResponse<ArticuloResumenResponse> listarPorJuego(String slug, String buscar, int pagina, int tamano) {
+    /**
+     * Guías de un juego (pestaña "Guías"), con búsqueda y paginación.
+     * El público ve solo las publicadas; el equipo ve también borradores y en revisión.
+     */
+    public PaginaResponse<ArticuloResumenResponse> listarPorJuego(String slug, String buscar, int pagina, int tamano,
+                                                                  UsuarioPrincipal yo) {
         juegoService.buscarPorSlug(slug); // 404 si el juego no existe
-        var page = articuloRepository.buscarPorJuego(slug, List.of(EstadoArticulo.PUBLICADO),
+        List<EstadoArticulo> estados = (yo != null && yo.esEquipo())
+                ? List.of(EstadoArticulo.values())
+                : List.of(EstadoArticulo.PUBLICADO);
+        var page = articuloRepository.buscarPorJuego(slug, estados,
                 Textos.limpiar(buscar), Paginas.de(pagina, tamano, MAS_RECIENTES));
         return PaginaResponse.desde(page, ArticuloResumenResponse::desde);
     }

@@ -232,3 +232,6 @@ button.comentario__responder {
 .lista-comentarios--respuestas { margin-top: 12px; padding-left: 4px; border-left: 2px solid var(--borde); }
 .lista-comentarios--respuestas .comentario { padding: 12px 0 12px 14px; border-bottom: 0; }
 .formulario .aviso { margin-top: 12px; }
+
+.autor__editar { margin-left: auto; padding: 6px 12px; font-size: 12px; }
+.autor__editar + .autor__estado { margin-left: 0; }

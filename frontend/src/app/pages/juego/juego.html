@@ -19,6 +19,9 @@
       <span class="etiqueta" [class.etiqueta--publicado]="j.estadoWiki === 'ABIERTA'">{{ textoWiki(j.estadoWiki) }}</span>
       <h1>{{ j.titulo }}</h1>
       <p>{{ j.eslogan }}</p>
+      @if (auth.esEquipo()) {
+        <a [routerLink]="['/equipo/juegos', j.slug, 'editar']" class="boton boton--oscuro juego-hero__editar">Editar juego</a>
+      }
     </div>
   </div>
 </section>
@@ -42,6 +45,13 @@
           Empieza con lo esencial o adéntrate en los secretos de {{ j.titulo }}.
           Guías revisadas por la comunidad, sin destripes inesperados.
         </p>
+
+        @if (auth.esEquipo()) {
+          <div class="barra-equipo">
+            <span>Equipo:</span>
+            <a routerLink="/equipo/articulos/nuevo" [queryParams]="{ juego: j.slug }" class="boton boton--primario">+ Nueva guía</a>
+          </div>
+        }
 
         <div class="buscador-guias">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg>
@@ -73,7 +83,9 @@
                   <span class="guia__cuerpo">
                     <h3>{{ a.titulo }}</h3>
                     <p>{{ a.resumen }}</p>
-                    <small>{{ a.categoria }} · {{ a.minutosLectura }} min · Actualizada el {{ a.fechaActualizacion | date: 'd MMM' }}</small>
+                    <small>{{ a.categoria }} · {{ a.minutosLectura }} min · Actualizada el {{ a.fechaActualizacion | date: 'd MMM' }}
+                      @if (a.estado !== 'PUBLICADO') { · <span class="etiqueta etiqueta--revision">{{ textoEstadoArticulo(a.estado) }}</span> }
+                    </small>
                   </span>
                   <svg class="guia__flecha" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </a>
@@ -97,6 +109,12 @@
 
       @case ('logros') {
         <h2 class="juego-titulo">Logros</h2>
+        @if (auth.esEquipo()) {
+          <div class="barra-equipo">
+            <span>Equipo:</span>
+            <a routerLink="/equipo/logros/nuevo" [queryParams]="{ juego: j.slug }" class="boton boton--primario">+ Nuevo logro</a>
+          </div>
+        }
         <p class="juego-subtitulo">Las pistas para conseguirlos están ocultas para evitar destripes: ábrelas solo si quieres.</p>
         <ul class="lista-guias">
           @for (l of logros(); track l.id) {
@@ -111,6 +129,9 @@
                     <p>{{ l.comoConseguirlo }}</p>
                   </details>
                 }
+                @if (auth.esEquipo()) {
+                  <a [routerLink]="['/equipo/logros', l.id, 'editar']" class="enlace-editar">Editar</a>
+                }
               </span>
             </li>
           } @empty {
@@ -121,6 +142,12 @@
 
       @case ('objetos') {
         <h2 class="juego-titulo">Objetos</h2>
+        @if (auth.esEquipo()) {
+          <div class="barra-equipo">
+            <span>Equipo:</span>
+            <a routerLink="/equipo/objetos/nuevo" [queryParams]="{ juego: j.slug }" class="boton boton--primario">+ Nuevo objeto</a>
+          </div>
+        }
         <p class="juego-subtitulo">Equipo, mejoras y objetos especiales de {{ j.titulo }}.</p>
         <ul class="lista-guias">
           @for (o of objetos(); track o.id) {
@@ -130,6 +157,9 @@
                 <h3>{{ o.nombre }}</h3>
                 <p>{{ o.descripcion }}</p>
                 <small>{{ o.tipo }}@if (o.rareza) { · {{ o.rareza }} }@if (o.ubicacion) { · {{ o.ubicacion }} }</small>
+                @if (auth.esEquipo()) {
+                  <a [routerLink]="['/equipo/objetos', o.id, 'editar']" class="enlace-editar">Editar</a>
+                }
               </span>
             </li>
           } @empty {
@@ -140,6 +170,12 @@
 
       @case ('personajes') {
         <h2 class="juego-titulo">Personajes</h2>
+        @if (auth.esEquipo()) {
+          <div class="barra-equipo">
+            <span>Equipo:</span>
+            <a routerLink="/equipo/personajes/nuevo" [queryParams]="{ juego: j.slug }" class="boton boton--primario">+ Nuevo personaje</a>
+          </div>
+        }
         <p class="juego-subtitulo">Quién es quién en {{ j.titulo }}.</p>
         <ul class="lista-guias">
           @for (p of personajes(); track p.id) {
@@ -149,6 +185,9 @@
                 <h3>{{ p.nombre }}</h3>
                 <p>{{ p.historia }}</p>
                 <small>{{ p.rol }}@if (p.ubicacion) { · {{ p.ubicacion }} }</small>
+                @if (auth.esEquipo()) {
+                  <a [routerLink]="['/equipo/personajes', p.id, 'editar']" class="enlace-editar">Editar</a>
+                }
               </span>
             </li>
           } @empty {

@@ -1,0 +1,112 @@
+<section class="contenedor gestion">
+  <p class="gestion__migas"><a routerLink="/equipo/juegos">Juegos y contenido</a> / {{ slug() ? 'Editar juego' : 'Nuevo juego' }}</p>
+  <div class="gestion__cabecera">
+    <div>
+      <h1>{{ slug() ? 'Editar ' + datos.titulo : 'Nuevo juego' }}</h1>
+      <p class="gestion__texto">La ficha técnica y las imágenes que verá la comunidad en el catálogo y en la wiki.</p>
+    </div>
+  </div>
+
+  <form class="formulario-g" (ngSubmit)="guardar()" novalidate>
+    <div class="tarjeta formulario-g__principal">
+      <h2>Datos del juego</h2>
+
+      <div class="fila-g">
+        <div class="campo-g">
+          <label for="j-titulo">Título *</label>
+          <input id="j-titulo" name="titulo" maxlength="120" [(ngModel)]="datos.titulo" placeholder="Hollow Knight">
+          @if (errores()['titulo']) { <span class="campo-g__error">{{ errores()['titulo'] }}</span> }
+        </div>
+        <div class="campo-g">
+          <label for="j-slug">Slug (dirección)</label>
+          <input id="j-slug" name="slug" maxlength="120" [(ngModel)]="datos.slug" placeholder="Se genera solo: hollow-knight">
+          @if (errores()['slug']) { <span class="campo-g__error">{{ errores()['slug'] }}</span> }
+          @else { <span class="campo-g__ayuda">Minúsculas y guiones. Queda en /juegos/{{ datos.slug || '…' }}</span> }
+        </div>
+      </div>
+
+      <div class="campo-g">
+        <label for="j-eslogan">Eslogan (texto del banner)</label>
+        <input id="j-eslogan" name="eslogan" maxlength="255" [(ngModel)]="datos.eslogan"
+          placeholder="Aguas tranquilas. Secretos profundos.">
+      </div>
+
+      <div class="campo-g">
+        <label for="j-desc">Descripción</label>
+        <textarea id="j-desc" name="descripcion" rows="4" [(ngModel)]="datos.descripcion"></textarea>
+      </div>
+
+      <div class="fila-g">
+        <div class="campo-g">
+          <label for="j-dev">Desarrollador</label>
+          <input id="j-dev" name="desarrollador" maxlength="120" [(ngModel)]="datos.desarrollador">
+        </div>
+        <div class="campo-g">
+          <label for="j-editor">Editor</label>
+          <input id="j-editor" name="editor" maxlength="120" [(ngModel)]="datos.editor">
+        </div>
+      </div>
+
+      <div class="fila-g">
+        <div class="campo-g">
+          <label for="j-fecha">Lanzamiento</label>
+          <input id="j-fecha" name="fechaLanzamiento" type="date" [(ngModel)]="datos.fechaLanzamiento">
+        </div>
+        <div class="campo-g">
+          <label for="j-modo">Modo de juego</label>
+          <input id="j-modo" name="modoJuego" maxlength="80" [(ngModel)]="datos.modoJuego" placeholder="Un jugador · Cooperativo">
+        </div>
+      </div>
+
+      <div class="fila-g">
+        <div class="campo-g">
+          <label for="j-generos">Géneros</label>
+          <input id="j-generos" name="generos" maxlength="150" [(ngModel)]="datos.generos" placeholder="Metroidvania, Aventura">
+          <span class="campo-g__ayuda">Separados por coma. El filtro del catálogo los usa.</span>
+        </div>
+        <div class="campo-g">
+          <label for="j-plat">Plataformas</label>
+          <input id="j-plat" name="plataformas" maxlength="150" [(ngModel)]="datos.plataformas" placeholder="PC · PS5 · Switch">
+        </div>
+      </div>
+    </div>
+
+    <aside class="tarjeta formulario-g__lateral">
+      <h2>Publicación</h2>
+
+      <div class="campo-g">
+        <label for="j-estado">Estado de la wiki</label>
+        <select id="j-estado" name="estadoWiki" [(ngModel)]="datos.estadoWiki">
+          <option value="EN_PREPARACION">En preparación (Próximamente)</option>
+          <option value="ABIERTA">Wiki abierta</option>
+        </select>
+      </div>
+
+      <div class="campo-g">
+        <label for="j-portada">Imagen de portada</label>
+        <input id="j-portada" name="imagenPortada" list="lista-imagenes" [(ngModel)]="datos.imagenPortada" placeholder="images/mi-juego.jpg">
+        @if (datos.imagenPortada) { <img class="imagen-previa" [src]="datos.imagenPortada" alt="Vista previa de la portada"> }
+      </div>
+
+      <div class="campo-g">
+        <label for="j-banner">Imagen del banner</label>
+        <input id="j-banner" name="imagenBanner" list="lista-imagenes" [(ngModel)]="datos.imagenBanner" placeholder="Si se deja vacía, usa la portada">
+        @if (datos.imagenBanner) { <img class="imagen-previa" [src]="datos.imagenBanner" alt="Vista previa del banner"> }
+        <span class="campo-g__ayuda">Las imágenes van en frontend/public/images. Aquí se escribe solo la ruta.</span>
+      </div>
+
+      <datalist id="lista-imagenes">
+        @for (img of imagenes; track img) { <option [value]="img"></option> }
+      </datalist>
+
+      @if (error()) { <p class="aviso aviso--error">{{ error() }}</p> }
+
+      <div class="acciones-g">
+        <button type="submit" class="boton boton--primario" [disabled]="guardando()">
+          {{ guardando() ? 'Guardando…' : (slug() ? 'Guardar cambios' : 'Crear juego') }}
+        </button>
+        <a routerLink="/equipo/juegos" class="boton boton--oscuro">Cancelar</a>
+      </div>
+    </aside>
+  </form>
+</section>

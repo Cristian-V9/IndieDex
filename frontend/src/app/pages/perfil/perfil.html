@@ -136,6 +136,7 @@
         <a [routerLink]="['/juegos', wikiFavorita().slug]" class="boton boton--oscuro">Volver a la wiki</a>
       </div>
       @if (auth.esEquipo()) {
+        <a routerLink="/equipo/juegos" class="perfil__privacidad">Gestionar juegos y contenido →</a>
         <a routerLink="/revision" class="perfil__privacidad">Ir al panel de revisión →</a>
       }
       <button type="button" class="perfil__privacidad perfil__salir" (click)="auth.cerrarSesion()">Cerrar sesión →</button>

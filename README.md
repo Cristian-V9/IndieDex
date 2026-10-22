@@ -176,6 +176,21 @@ Todas usan la contraseña **`indiedex123`**. Se puede entrar con el nombre o con
 > Para probar el umbral de votos: "Abrir la wiki de Stardew Valley" tiene 4 votos.
 > Regístrate con una cuenta nueva, vótala y pasará sola de *Sugerencia* a *Votos*.
 
+## Gestión del contenido (EDITOR y ADMIN)
+
+Al entrar con una cuenta del equipo aparecen en la barra los enlaces **Gestión** y **Revisión**:
+
+- **Gestión → Juegos y contenido** (`/equipo/juegos`): lista de juegos; crear, editar y, solo ADMIN, borrar
+  (borra también toda su wiki).
+- **Nueva guía**: formulario con barra para insertar bloques (introducción, subtítulo, párrafo, consejo, imagen,
+  lista de mejoras, fuentes) y vista previa en vivo. Se guarda como *Borrador*, *En revisión* o *Publicado*;
+  los dos primeros solo los ve el equipo. Al publicar la primera guía de un juego, su wiki pasa a «Wiki abierta».
+- **Logros, objetos y personajes**: botón «+ Nuevo» en cada pestaña de la wiki y enlace «Editar» en cada ficha.
+- En la página de cada juego y de cada guía aparecen los botones «Editar juego» y «Editar guía».
+- **Revisión** (`/revision`): aprobar o rechazar propuestas de la comunidad con una nota para su autor.
+
+Las imágenes se eligen de una lista con las que hay en `frontend/public/images` (`core/imagenes.ts`).
+
 ## Permisos
 
 | Acción | Sin sesión | USER | EDITOR | ADMIN |

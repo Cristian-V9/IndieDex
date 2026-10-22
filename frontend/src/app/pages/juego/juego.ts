@@ -7,6 +7,7 @@ import { BloqueDonacion } from '../../components/bloque-donacion/bloque-donacion
 import { textoWiki } from '../../core/etiquetas';
 import { mensajeError } from '../../core/errores';
 import { ArticuloResumen, JuegoDetalle, Logro, Objeto, Pagina, Personaje } from '../../core/modelos';
+import { AuthService } from '../../core/servicios/auth.service';
 import { JuegosService } from '../../core/servicios/juegos.service';
 
 type Seccion = 'guias' | 'logros' | 'objetos' | 'personajes';
@@ -20,6 +21,7 @@ type Seccion = 'guias' | 'logros' | 'objetos' | 'personajes';
 export class Juego {
   private readonly juegosService = inject(JuegosService);
   private readonly titulo = inject(Title);
+  protected readonly auth = inject(AuthService);
 
   /** :slug de la ruta /juegos/:slug */
   readonly slug = input.required<string>();
@@ -95,6 +97,10 @@ export class Juego {
   protected irAPagina(evento: Event, pagina: number): void {
     evento.preventDefault();
     this.pagina.set(pagina);
+  }
+
+  protected textoEstadoArticulo(estado: string): string {
+    return estado === 'BORRADOR' ? 'Borrador' : estado === 'EN_REVISION' ? 'En revisión' : 'Publicado';
   }
 
   /** Icono de la tarjeta según la categoría de la guía. */

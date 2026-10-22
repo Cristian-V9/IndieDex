@@ -22,6 +22,9 @@
       <strong>{{ a.autor.nombreUsuario }} y la comunidad</strong>
       <span>Actualizada el {{ a.fechaActualizacion | date: 'd MMM y' }} · {{ a.minutosLectura }} min de lectura</span>
     </div>
+    @if (auth.esEquipo()) {
+      <a [routerLink]="['/equipo/articulos', a.id, 'editar']" class="boton boton--oscuro autor__editar">Editar guía</a>
+    }
     <span class="etiqueta autor__estado" [class.etiqueta--publicado]="a.estado === 'PUBLICADO'"
       [class.etiqueta--revision]="a.estado !== 'PUBLICADO'">{{ textoEstado(a.estado) }}</span>
   </div>

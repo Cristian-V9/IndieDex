@@ -208,3 +208,21 @@
 .pista { margin-top: 6px; font-size: 13px; color: var(--texto-suave); }
 .pista summary { cursor: pointer; color: var(--ambar); font-size: 12px; }
 .pista p { margin-top: 6px; }
+
+/* ---------- Herramientas del equipo ---------- */
+.juego-hero__editar { margin-top: 6px; }
+.barra-equipo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: 1px dashed var(--borde);
+  border-radius: var(--radio-chico);
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+.barra-equipo .boton { padding: 6px 12px; font-size: 12px; }
+.enlace-editar { display: inline-block; margin-top: 6px; font-size: 12px; font-weight: 700; color: var(--ambar); }
+.enlace-editar:hover { text-decoration: underline; }
+.guia__cuerpo .etiqueta { vertical-align: middle; }

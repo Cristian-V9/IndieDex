@@ -12,6 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.indiedex.security.UsuarioPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,13 +44,15 @@ public class JuegoController {
         return juegoService.obtenerPorSlug(slug);
     }
 
-    @Operation(summary = "Guías publicadas de un juego (pestaña Guías)")
+    @Operation(summary = "Guías de un juego (pestaña Guías)",
+            description = "Público: solo publicadas. Con sesión de EDITOR/ADMIN incluye borradores y en revisión")
     @GetMapping("/{slug}/articulos")
     public PaginaResponse<ArticuloResumenResponse> articulos(@PathVariable String slug,
                                                              @RequestParam(required = false) String buscar,
                                                              @RequestParam(defaultValue = "0") int pagina,
-                                                             @RequestParam(defaultValue = "10") int tamano) {
-        return articuloService.listarPorJuego(slug, buscar, pagina, tamano);
+                                                             @RequestParam(defaultValue = "10") int tamano,
+                                                             @AuthenticationPrincipal UsuarioPrincipal yo) {
+        return articuloService.listarPorJuego(slug, buscar, pagina, tamano, yo);
     }
 
     @Operation(summary = "Logros de un juego (pestaña Logros)")

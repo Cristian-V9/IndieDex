@@ -69,7 +69,8 @@
         <div class="navbar__sesion">
             @if (auth.usuario(); as u) {
                 @if (auth.esEquipo()) {
-                    <a routerLink="/revision" routerLinkActive="activo" class="enlace-sesion">Panel</a>
+                    <a routerLink="/equipo/juegos" routerLinkActive="activo" class="enlace-sesion">Gestión</a>
+                    <a routerLink="/revision" routerLinkActive="activo" class="enlace-sesion">Revisión</a>
                 }
                 <a routerLink="/perfil" class="navbar__usuario" title="Mi perfil">
                     <span class="navbar__avatar" aria-hidden="true">{{ iniciales(u.nombreUsuario) }}</span>

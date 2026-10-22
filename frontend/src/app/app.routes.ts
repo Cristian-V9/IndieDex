@@ -9,6 +9,10 @@ import { Login } from './pages/login/login';
 import { Registro } from './pages/registro/registro';
 import { Perfil } from './pages/perfil/perfil';
 import { PanelRevision } from './pages/panel-revision/panel-revision';
+import { GestionJuegos } from './pages/equipo/gestion-juegos/gestion-juegos';
+import { JuegoForm } from './pages/equipo/juego-form/juego-form';
+import { ArticuloForm } from './pages/equipo/articulo-form/articulo-form';
+import { ContenidoForm } from './pages/equipo/contenido-form/contenido-form';
 
 export const routes: Routes = [
   { path: '', component: Inicio, title: 'IndieDex · Wiki de juegos indie' },
@@ -20,5 +24,17 @@ export const routes: Routes = [
   { path: 'registro', component: Registro, title: 'Crear cuenta · IndieDex' },
   { path: 'perfil', component: Perfil, canActivate: [sesionGuard], title: 'Mi perfil · IndieDex' },
   { path: 'revision', component: PanelRevision, canActivate: [equipoGuard], title: 'Panel de revisión · IndieDex' },
+
+  // ---------- Gestión del contenido: solo EDITOR / ADMIN ----------
+  { path: 'equipo', redirectTo: 'equipo/juegos', pathMatch: 'full' },
+  { path: 'equipo/juegos', component: GestionJuegos, canActivate: [equipoGuard], title: 'Juegos y contenido · IndieDex' },
+  { path: 'equipo/juegos/nuevo', component: JuegoForm, canActivate: [equipoGuard], title: 'Nuevo juego · IndieDex' },
+  { path: 'equipo/juegos/:slug/editar', component: JuegoForm, canActivate: [equipoGuard], title: 'Editar juego · IndieDex' },
+  { path: 'equipo/articulos/nuevo', component: ArticuloForm, canActivate: [equipoGuard], title: 'Nueva guía · IndieDex' },
+  { path: 'equipo/articulos/:id/editar', component: ArticuloForm, canActivate: [equipoGuard], title: 'Editar guía · IndieDex' },
+  // tipo = logros | objetos | personajes
+  { path: 'equipo/:tipo/nuevo', component: ContenidoForm, canActivate: [equipoGuard], title: 'Nuevo contenido · IndieDex' },
+  { path: 'equipo/:tipo/:id/editar', component: ContenidoForm, canActivate: [equipoGuard], title: 'Editar contenido · IndieDex' },
+
   { path: '**', redirectTo: '' },
 ];
