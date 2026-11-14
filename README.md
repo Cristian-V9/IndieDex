@@ -1,46 +1,36 @@
-# IndieDex · La wiki de los juegos indie, en español
+[English](README.md) | [Español](README.es.md)
 
-Proyecto de Back-End con **Spring Boot**: una wiki multijuego, solo de indies y en español.
-Empieza con **Dredge** y crece con las propuestas y los votos de la comunidad.
+# IndieDex
 
-**Integrantes:** Zoe Gabriel Balagay Aponte · Juandiego Rosas Reyes · Cristian Alexander Vargas Fajardo
+A multi-game wiki for indie titles, written entirely in Spanish. It opens with Dredge and grows from there: anyone can propose a new wiki or a new guide, and the proposals that collect enough community votes move on to review.
 
----
+Back-End course project by Zoe Gabriel Balagay Aponte, Juandiego Rosas Reyes and Cristian Alexander Vargas Fajardo.
 
-## Tecnologías
+> Live site: add the Render URL here once the deploy finishes.
 
-| Capa | Tecnología |
-|---|---|
-| Backend | Java 17+, Spring Boot 3.5 (Web, Data JPA, Validation, Security), JWT (jjwt), Lombok |
-| Base de datos | MySQL 8 |
-| Documentación de la API | Swagger / OpenAPI (springdoc) |
-| Frontend | Angular 21 |
-| Pruebas de la API | Colección de Postman (62 peticiones con pruebas automáticas) |
+## Stack
 
-## Arquitectura
+The backend is Java 17+ with Spring Boot 3.5 (Web, Data JPA, Validation and Security), JWT handled by jjwt, and Lombok to cut down boilerplate. Data lives in MySQL 8. The API documents itself through Swagger/OpenAPI via springdoc, and the frontend is Angular 21. There is also a Postman collection with 62 requests that run their own assertions.
 
-Modelo cliente-servidor con el backend organizado por capas:
+## Architecture
+
+Client-server, with the backend split into layers:
 
 ```mermaid
 flowchart LR
     A["Angular<br/>(localhost:4200)"] -- "HTTP + JSON<br/>Authorization: Bearer JWT" --> B
-    subgraph B["API REST · Spring Boot (localhost:8080)"]
+    subgraph B["REST API · Spring Boot (localhost:8080)"]
         direction TB
-        S["Spring Security<br/>filtro JWT + roles"] --> C["Controladores REST<br/>(controller)"]
-        C --> SV["Servicios<br/>(service) · lógica de negocio"]
-        SV --> R["Repositorios<br/>(repository) · Spring Data JPA"]
+        S["Spring Security<br/>JWT filter + roles"] --> C["REST controllers<br/>(controller)"]
+        C --> SV["Services<br/>(service) · business logic"]
+        SV --> R["Repositories<br/>(repository) · Spring Data JPA"]
     end
     R --> D[("MySQL<br/>indiedex_db")]
 ```
 
-- **controller**: recibe la petición, valida los datos (`@Valid`) y responde con DTOs.
-- **service**: reglas de la aplicación (flujo de sugerencias, un voto por usuario, permisos finos…).
-- **repository**: consultas a la base de datos con Spring Data JPA.
-- **model**: entidades JPA (las tablas).
-- **dto**: lo que entra y sale de la API. **Nunca se devuelve la contraseña.**
-- **exception**: un único formato de error para toda la API (`GlobalExceptionHandler`).
+A request lands on a controller, which validates the payload with `@Valid` and answers with DTOs. Controllers delegate to services, where the actual rules live: the suggestion workflow, one vote per user, the finer permission checks. Services talk to repositories, which are Spring Data JPA interfaces over the JPA entities in `model`. Everything that enters or leaves the API goes through a DTO, so the password hash never reaches the client. Errors are funneled through `GlobalExceptionHandler` so the whole API fails in one consistent shape.
 
-## Modelo de datos
+## Data model
 
 ```mermaid
 erDiagram
@@ -93,9 +83,9 @@ erDiagram
     }
 ```
 
-El script completo está en [`database/schema.sql`](database/schema.sql).
+The full script is in [`database/schema.sql`](database/schema.sql).
 
-### Flujo colaborativo de las sugerencias
+### How a suggestion moves
 
 ```mermaid
 stateDiagram-v2
@@ -110,46 +100,33 @@ stateDiagram-v2
     RECHAZADA --> [*]
 ```
 
-El umbral de votos se cambia en `application.properties` (`indiedex.sugerencias.umbral-votos`).
+Five votes is the default threshold, not a hard rule. Change `indiedex.sugerencias.umbral-votos` in `application.properties` if you want a different number.
 
----
+## Running it locally
 
-## Cómo ejecutar el proyecto
+You need JDK 17 or newer (we tested on 17, 21 and 24), Maven 3.9+ or IntelliJ IDEA with its bundled Maven, MySQL 8 (the one shipped with XAMPP is fine), and Node.js 20.19+ or 22.12+ with npm for Angular 21.
 
-### Requisitos
+### 1. Database
 
-- **JDK 17 o superior** (funciona con 17, 21 y 24)
-- **Maven 3.9+**, o abrir `backend/` en **IntelliJ IDEA** (trae Maven incluido)
-- **MySQL 8** (sirve el de **XAMPP**)
-- **Node.js 20.19+ o 22.12+** y npm (para Angular 21)
+Start MySQL. In XAMPP that is the Start button next to MySQL. You don't need to create anything by hand: on boot, Spring creates the `indiedex_db` database, the tables and the sample data.
 
-### 1. Base de datos
+If you'd rather build the schema from the script, run `mysql -u root -p < database/schema.sql` first.
 
-Enciende MySQL (en XAMPP: botón *Start* de MySQL). **No hace falta crear nada a mano**:
-al arrancar, Spring crea la base `indiedex_db`, las tablas y los datos de ejemplo.
+### 2. Backend
 
-> Opcional: `mysql -u root -p < database/schema.sql` crea la base y las tablas con el script.
+XAMPP ships with no password on `root`, so most people can skip this step. If yours does have one, copy `backend/src/main/resources/application-local.properties.example` to `application-local.properties` in the same folder and put your password there. That file is gitignored.
 
-### 2. Backend (Spring Boot)
-
-Si tu usuario `root` de MySQL **tiene contraseña** (en XAMPP por defecto no tiene):
-
-1. Copia `backend/src/main/resources/application-local.properties.example`
-   como `application-local.properties` en la misma carpeta.
-2. Escribe ahí tu contraseña. Ese archivo **no se sube a GitHub**.
-
-Luego, desde la carpeta `backend/`:
+Then, from `backend/`:
 
 ```bash
 mvn spring-boot:run
 ```
 
-O en IntelliJ: abrir la carpeta `backend`, esperar a que cargue Maven y ejecutar `IndiedexApplication`.
+In IntelliJ, open the `backend` folder, wait for Maven to finish loading and run `IndiedexApplication`.
 
-- API: <http://localhost:8080/api/juegos>
-- **Swagger (documentación interactiva):** <http://localhost:8080/swagger-ui.html>
+The API answers at <http://localhost:8080/api/juegos>, and Swagger is at <http://localhost:8080/swagger-ui.html>.
 
-### 3. Frontend (Angular)
+### 3. Frontend
 
 ```bash
 cd frontend
@@ -157,105 +134,96 @@ npm install
 npm start
 ```
 
-Abrir <http://localhost:4200>. La dirección del backend está en `frontend/src/environments/`
-(`environment.development.ts` en local; `environment.ts` al desplegar).
+Open <http://localhost:4200>. The backend address lives in `frontend/src/environments/`: `environment.development.ts` for local work, `environment.ts` for the deployed build.
 
----
+## Deploying to Render
 
-## Despliegue (Render)
+The app ships to [Render](https://render.com) as a single service. The `Dockerfile` builds Angular, drops it inside Spring Boot, and the page and the API end up on the same address. The database goes to TiDB Cloud (MySQL-compatible and free) because Render doesn't offer MySQL.
 
-La aplicación se publica en [Render](https://render.com) como **un solo servicio**: el `Dockerfile` compila Angular,
-lo mete dentro de Spring Boot y la página y la API quedan en la misma dirección. La base de datos va en
-TiDB Cloud (compatible con MySQL, gratis), porque Render no ofrece MySQL.
+Full walkthrough in [DESPLIEGUE.md](DESPLIEGUE.md). The short version:
 
-Pasos completos en **[DESPLIEGUE.md](DESPLIEGUE.md)**. En resumen:
+1. Create the free database on TiDB Cloud and copy the host, user and password.
+2. On Render, go to New → Blueprint, pick this repository (it reads `render.yaml`) and fill in `DB_URL`, `DB_USER` and `DB_PASSWORD`.
+3. Wait for the service to say Live, then open `https://tu-servicio.onrender.com`.
 
-1. Crear la base gratuita en TiDB Cloud y copiar host, usuario y contraseña.
-2. En Render: **New → Blueprint → este repositorio** (usa `render.yaml`) y llenar `DB_URL`, `DB_USER` y `DB_PASSWORD`.
-3. Esperar a que diga **Live** y abrir `https://…onrender.com`.
+## JWT authentication
 
-## Autenticación con JWT
+`POST /api/auth/login` (or `/registro`) checks the password against its BCrypt hash and hands back a JWT signed with HMAC-SHA, in `security/JwtService.java`. The token carries the username, the role and an expiry 24 hours out.
 
-1. `POST /api/auth/login` (o `/registro`) comprueba la contraseña con BCrypt y devuelve un **token JWT**
-   firmado con una clave secreta (HMAC-SHA, `security/JwtService.java`). El token lleva el usuario, su rol y la fecha de expiración (24 h).
-2. Angular guarda el token y lo envía en cada petición: `Authorization: Bearer <token>`
-   (`frontend/src/app/core/auth.interceptor.ts`).
-3. En el backend, `security/JwtAuthFilter.java` valida la firma y la expiración en cada petición y deja al usuario
-   autenticado; `config/SecurityConfig.java` y `@PreAuthorize` deciden qué puede hacer según su rol.
-4. Sin token, o con uno vencido o alterado, las rutas protegidas responden **401**; con un rol insuficiente, **403**.
+Angular stores it and attaches it to every request as `Authorization: Bearer <token>`, which happens in `frontend/src/app/core/auth.interceptor.ts`. On the way back in, `security/JwtAuthFilter.java` verifies the signature and the expiry and leaves the user authenticated; from there `config/SecurityConfig.java` and the `@PreAuthorize` annotations decide what that user is allowed to do.
 
-Para verlo en vivo: en Swagger, hacer login, copiar el `token` y pegarlo en **Authorize**.
+No token, an expired one or a tampered one gets a 401. A valid token with an insufficient role gets a 403.
 
-## Cuentas de prueba
+To see it running: log in from Swagger, copy the `token` from the response and paste it into Authorize.
 
-Todas usan la contraseña **`indiedex123`**. Se puede entrar con el nombre o con el correo.
+## Test accounts
 
-| Usuario | Correo | Rol | Puede |
+Every account uses the password `indiedex123`, and you can log in with either the username or the email.
+
+| User | Email | Role | Can |
 |---|---|---|---|
-| `admin` | admin@indiedex.com | ADMIN | Todo, incluido borrar juegos y cambiar roles |
-| `FaroNorte` | faronorte@indiedex.com | EDITOR | Escribir artículos, revisar y publicar sugerencias |
-| `MarineroLunar` | marinero@indiedex.com | EDITOR | Igual que FaroNorte |
-| `LunaVerde` | lunaverde@correo.com | USER | Comentar, sugerir y votar |
-| `NieblaBaja`, `SemillaAzul`, `Pescadora88` | … | USER | Comentar, sugerir y votar |
+| `admin` | admin@indiedex.com | ADMIN | Everything, including deleting games and changing roles |
+| `FaroNorte` | faronorte@indiedex.com | EDITOR | Write articles, review and publish suggestions |
+| `MarineroLunar` | marinero@indiedex.com | EDITOR | Same as FaroNorte |
+| `LunaVerde` | lunaverde@correo.com | USER | Comment, suggest and vote |
+| `NieblaBaja`, `SemillaAzul`, `Pescadora88` | ... | USER | Comment, suggest and vote |
 
-> Para probar el umbral de votos: "Abrir la wiki de Stardew Valley" tiene 4 votos.
-> Regístrate con una cuenta nueva, vótala y pasará sola de *Sugerencia* a *Votos*.
+To watch the vote threshold fire, the suggestion "Abrir la wiki de Stardew Valley" sits at 4 votes. Register a fresh account, vote on it, and it jumps from Sugerencia to Votos on its own.
 
-## Gestión del contenido (EDITOR y ADMIN)
+## Managing content as EDITOR or ADMIN
 
-Al entrar con una cuenta del equipo aparecen en la barra los enlaces **Gestión** y **Revisión**:
+Logging in with a team account adds two links to the navbar, Gestión and Revisión.
 
-- **Gestión → Juegos y contenido** (`/equipo/juegos`): lista de juegos; crear, editar y, solo ADMIN, borrar
-  (borra también toda su wiki).
-- **Nueva guía**: formulario con barra para insertar bloques (introducción, subtítulo, párrafo, consejo, imagen,
-  lista de mejoras, fuentes) y vista previa en vivo. Se guarda como *Borrador*, *En revisión* o *Publicado*;
-  los dos primeros solo los ve el equipo. Al publicar la primera guía de un juego, su wiki pasa a «Wiki abierta».
-- **Logros, objetos y personajes**: botón «+ Nuevo» en cada pestaña de la wiki y enlace «Editar» en cada ficha.
-- En la página de cada juego y de cada guía aparecen los botones «Editar juego» y «Editar guía».
-- **Revisión** (`/revision`): aprobar o rechazar propuestas de la comunidad con una nota para su autor.
+Gestión → Juegos y contenido (`/equipo/juegos`) lists every game, and from there you can create and edit them. Deleting is ADMIN only, and it takes the whole wiki with it.
 
-Las imágenes se eligen de una lista con las que hay en `frontend/public/images` (`core/imagenes.ts`).
+Nueva guía opens a form with a toolbar for inserting blocks (intro, subtitle, paragraph, tip, image, upgrade list, sources) and a preview that updates as you type. A guide saves as Borrador, En revisión or Publicado, and the first two are only visible to the team. Publishing a game's first guide flips its wiki to "Wiki abierta".
 
-## Permisos
+Achievements, items and characters each get a "+ Nuevo" button on their wiki tab and an "Editar" link on every card. Game and guide pages carry their own "Editar juego" and "Editar guía" buttons.
 
-| Acción | Sin sesión | USER | EDITOR | ADMIN |
+Revisión (`/revision`) is where community proposals get approved or rejected, with a note back to whoever wrote them.
+
+Images are picked from whatever sits in `frontend/public/images`, listed in `core/imagenes.ts`.
+
+## Permissions
+
+| Action | Logged out | USER | EDITOR | ADMIN |
 |---|:-:|:-:|:-:|:-:|
-| Ver juegos, artículos publicados, sugerencias | ✅ | ✅ | ✅ | ✅ |
-| Comentar, sugerir, votar, editar mi perfil | | ✅ | ✅ | ✅ |
-| Borrar mis comentarios | | ✅ | ✅ | ✅ |
-| Crear/editar juegos, artículos, logros, objetos, personajes | | | ✅ | ✅ |
-| Ver borradores, panel de revisión, aprobar/rechazar | | | ✅ | ✅ |
-| Borrar comentarios de otros (moderar) | | | ✅ | ✅ |
-| Borrar juegos, listar usuarios, cambiar roles | | | | ✅ |
+| View games, published articles, suggestions | yes | yes | yes | yes |
+| Comment, suggest, vote, edit own profile | | yes | yes | yes |
+| Delete own comments | | yes | yes | yes |
+| Create/edit games, articles, achievements, items, characters | | | yes | yes |
+| View drafts, review panel, approve/reject | | | yes | yes |
+| Delete other people's comments (moderate) | | | yes | yes |
+| Delete games, list users, change roles | | | | yes |
 
-## Rutas de la API
+## API routes
 
-Todas empiezan por `http://localhost:8080`. La lista completa con ejemplos está en Swagger.
+Everything hangs off `http://localhost:8080`. Swagger has the full list with examples.
 
-| Método | Ruta | Descripción |
+| Method | Route | What it does |
 |---|---|---|
-| POST | `/api/auth/registro` | Crear cuenta (siempre USER) y devolver token |
-| POST | `/api/auth/login` | Iniciar sesión con correo o usuario |
-| GET | `/api/estadisticas` | Cifras del inicio |
-| GET | `/api/buscar?q=` | Buscador global |
-| GET | `/api/juegos?buscar=&genero=&estado=&orden=` | Catálogo con filtros |
-| GET | `/api/juegos/{slug}` | Ficha del juego |
-| GET | `/api/juegos/{slug}/articulos` · `/logros` · `/objetos` · `/personajes` | Pestañas de la wiki |
-| POST · PUT · DELETE | `/api/juegos` · `/api/juegos/{id}` | Gestionar juegos |
-| GET | `/api/articulos/recientes` · `/api/articulos/{id}` | Artículos |
-| POST · PUT · PATCH · DELETE | `/api/articulos` · `/{id}` · `/{id}/estado` | Gestionar artículos |
-| GET · POST · PUT · DELETE | `/api/logros` · `/api/objetos` · `/api/personajes` | Contenido de la wiki |
-| GET · POST | `/api/articulos/{id}/comentarios` | Ver y escribir comentarios (con `padreId` para responder) |
-| DELETE | `/api/comentarios/{id}` | Borrar comentario |
-| GET · POST | `/api/sugerencias` | Listar (filtros, orden, búsqueda) y proponer |
-| POST · DELETE | `/api/sugerencias/{id}/voto` | Votar y retirar voto |
-| PATCH | `/api/sugerencias/{id}/avanzar` · `/rechazar` | Aprobar o rechazar con nota |
-| GET | `/api/sugerencias/resumen` | Cifras del panel de revisión |
-| GET · PUT | `/api/usuarios/me` | Mi perfil |
-| GET | `/api/usuarios/me/sugerencias` · `/votos` · `/comentarios` | Mi actividad |
-| GET · PATCH | `/api/usuarios` · `/api/usuarios/{id}/rol` | Administración de usuarios |
+| POST | `/api/auth/registro` | Create an account (always USER) and return a token |
+| POST | `/api/auth/login` | Log in with email or username |
+| GET | `/api/estadisticas` | Numbers for the home page |
+| GET | `/api/buscar?q=` | Global search |
+| GET | `/api/juegos?buscar=&genero=&estado=&orden=` | Catalog with filters |
+| GET | `/api/juegos/{slug}` | Game page |
+| GET | `/api/juegos/{slug}/articulos` · `/logros` · `/objetos` · `/personajes` | Wiki tabs |
+| POST · PUT · DELETE | `/api/juegos` · `/api/juegos/{id}` | Manage games |
+| GET | `/api/articulos/recientes` · `/api/articulos/{id}` | Articles |
+| POST · PUT · PATCH · DELETE | `/api/articulos` · `/{id}` · `/{id}/estado` | Manage articles |
+| GET · POST · PUT · DELETE | `/api/logros` · `/api/objetos` · `/api/personajes` | Wiki content |
+| GET · POST | `/api/articulos/{id}/comentarios` | Read and post comments (`padreId` to reply) |
+| DELETE | `/api/comentarios/{id}` | Delete a comment |
+| GET · POST | `/api/sugerencias` | List (filters, sorting, search) and propose |
+| POST · DELETE | `/api/sugerencias/{id}/voto` | Vote and withdraw a vote |
+| PATCH | `/api/sugerencias/{id}/avanzar` · `/rechazar` | Approve, or reject with a note |
+| GET | `/api/sugerencias/resumen` | Numbers for the review panel |
+| GET · PUT | `/api/usuarios/me` | My profile |
+| GET | `/api/usuarios/me/sugerencias` · `/votos` · `/comentarios` | My activity |
+| GET · PATCH | `/api/usuarios` · `/api/usuarios/{id}/rol` | User administration |
 
-Los errores siempre tienen el mismo formato:
+Errors always come back in the same shape:
 
 ```json
 { "estado": 400, "error": "Bad Request", "mensaje": "Hay datos que corregir",
@@ -263,54 +231,50 @@ Los errores siempre tienen el mismo formato:
   "campos": { "email": "El correo no es válido" } }
 ```
 
-## Pruebas con Postman
+## Testing with Postman
 
-1. Importar `backend/postman/IndieDex.postman_collection.json`.
-2. Con el backend encendido (y la base recién creada), abrir **Run collection** y ejecutarla en orden.
-3. Cada petición guarda los datos que usan las siguientes (tokens, ids) y verifica la respuesta:
-   permisos por rol (401/403), validaciones (400), duplicados (409), flujo de sugerencias y votos.
+Import `backend/postman/IndieDex.postman_collection.json`, start the backend on a freshly created database, then hit Run collection and let it go in order. Each request stashes what the next ones need (tokens, ids) and asserts on the response: role permissions (401/403), validation (400), duplicates (409), and the whole suggestion and voting flow.
 
-Para volver a los datos de ejemplo iniciales: borrar la base (`DROP DATABASE indiedex_db;`) y arrancar de nuevo.
+To get back to the original sample data, drop the database (`DROP DATABASE indiedex_db;`) and start the app again.
 
-## Estructura
+## Project layout
 
 ```
 IndieDex/
-├── Dockerfile                        Imagen para desplegar (Angular + Spring Boot en un .jar)
-├── render.yaml                       Configuración de Render
-├── DESPLIEGUE.md                     Guía de despliegue
+├── Dockerfile                        Deploy image (Angular + Spring Boot in one .jar)
+├── render.yaml                       Render configuration
+├── DESPLIEGUE.md                     Deployment guide
 ├── backend/
 │   ├── pom.xml
-│   ├── postman/                      Colección de pruebas
+│   ├── postman/                      Test collection
 │   └── src/main/java/com/indiedex/
-│       ├── config/                   Seguridad, Swagger y datos de ejemplo
-│       ├── controller/               Controladores REST
-│       ├── dto/                      Datos de entrada y salida
-│       ├── exception/                Errores y manejador global
-│       ├── model/                    Entidades JPA
-│       ├── repository/               Repositorios Spring Data
-│       ├── security/                 JWT y usuario autenticado
-│       ├── service/                  Lógica de negocio
-│       └── util/                     Utilidades (slugs, paginación)
+│       ├── config/                   Security, Swagger and sample data
+│       ├── controller/               REST controllers
+│       ├── dto/                      Request and response objects
+│       ├── exception/                Errors and the global handler
+│       ├── model/                    JPA entities
+│       ├── repository/               Spring Data repositories
+│       ├── security/                 JWT and the authenticated user
+│       ├── service/                  Business logic
+│       └── util/                     Helpers (slugs, pagination)
 ├── database/
-│   └── schema.sql                    Esquema de MySQL
+│   └── schema.sql                    MySQL schema
 └── frontend/
-    ├── public/images/                Imágenes (la base de datos guarda solo su ruta)
+    ├── public/images/                Images (the database stores only the path)
     └── src/app/
-        ├── core/                     Modelos, servicios HTTP, sesión, interceptor y guards
-        ├── components/               Navbar, footer, anuncio, donación
-        └── pages/                    Una carpeta por página
+        ├── core/                     Models, HTTP services, session, interceptor and guards
+        ├── components/               Navbar, footer, announcement, donation
+        └── pages/                    One folder per page
 ```
 
-## Notas
+## Notes
 
-- **Páginas informativas:** Sobre IndieDex, Normas, Contacto, Privacidad, Términos y Cookies (enlaces del pie).
-  Su texto está en `frontend/src/app/core/textos.ts`; las ventanas flotantes de normas (Sugerencias) y de
-  términos y privacidad (Registro) usan ese mismo texto.
-- **Donaciones:** `/donar` es una página de demostración: muestra el agradecimiento pero no cobra ni pide datos de pago.
-- **Imágenes:** viven en `frontend/public/images/`. La base de datos guarda solo la ruta (`images/dredge.jpg`).
-  Para un juego nuevo: copiar su imagen ahí y crear el juego con esa ruta.
-- **Contenido de ejemplo:** la guía *Tu primera noche en el mar* es la que escribió el equipo en la maqueta.
-  Las demás guías, logros, objetos y personajes de Dredge son textos de prueba: conviene revisarlos antes de presentar.
-- **Configuración por variables de entorno** (opcional): `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`,
-  `JWT_SECRET`, `CORS_ORIGENES`, `UMBRAL_VOTOS`, `PORT`.
+The footer links to six informational pages: Sobre IndieDex, Normas, Contacto, Privacidad, Términos and Cookies. Their text lives in `frontend/src/app/core/textos.ts`, and the modals for the rules (on Sugerencias) and for the terms and privacy (on Registro) pull from that same file.
+
+`/donar` is a demo page. It shows the thank-you message but never charges anything or asks for payment details.
+
+Images sit in `frontend/public/images/` and the database only keeps the path, like `images/dredge.jpg`. To add a game, copy its image there and reference that path when you create it.
+
+One caveat on the sample content: the guide "Tu primera noche en el mar" is the one the team actually wrote for the mockup. The rest of the Dredge guides, achievements, items and characters are placeholder text, so give them a read before presenting.
+
+The app can also be configured through environment variables, which is optional locally but how the Render deploy works: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `CORS_ORIGENES`, `UMBRAL_VOTOS` and `PORT`.
