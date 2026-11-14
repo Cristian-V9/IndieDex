@@ -276,6 +276,10 @@ IndieDex/
 
 ## Notas
 
+- **Páginas informativas:** Sobre IndieDex, Normas, Contacto, Privacidad, Términos y Cookies (enlaces del pie).
+  Su texto está en `frontend/src/app/core/textos.ts`; las ventanas flotantes de normas (Sugerencias) y de
+  términos y privacidad (Registro) usan ese mismo texto.
+- **Donaciones:** `/donar` es una página de demostración: muestra el agradecimiento pero no cobra ni pide datos de pago.
 - **Imágenes:** viven en `frontend/public/images/`. La base de datos guarda solo la ruta (`images/dredge.jpg`).
   Para un juego nuevo: copiar su imagen ahí y crear el juego con esa ruta.
 - **Contenido de ejemplo:** la guía *Tu primera noche en el mar* es la que escribió el equipo en la maqueta.

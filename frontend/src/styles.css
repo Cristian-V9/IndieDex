@@ -365,3 +365,17 @@ img {
 
 /* Texto solo para lectores de pantalla */
 .oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Botón con aspecto de enlace dentro de un texto (abre una ventana flotante) */
+.enlace-texto {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--ambar);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.enlace-texto:hover { color: var(--crema); }

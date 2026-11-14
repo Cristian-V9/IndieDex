@@ -1,0 +1,48 @@
+<section class="contenedor donar">
+  <div class="tarjeta donar__caja">
+    <span class="donar__icono" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 3h6l2.5 7h-11L9 3z" /><path d="M12 10v7" /><path d="M8 21h8" /><path d="M10 17h4" />
+      </svg>
+    </span>
+
+    @if (!agradecido()) {
+      <p class="eyebrow">Apoya IndieDex</p>
+      <h1>Mantengamos encendida la luz</h1>
+      <p class="donar__texto">
+        IndieDex es una wiki hecha por jugadores, sin muros de pago ni anuncios invasivos.
+        Tu aporte ayuda a mantener el servidor y a abrir nuevas wikis de juegos indie.
+      </p>
+
+      <fieldset class="donar__montos">
+        <legend>Elige un aporte</legend>
+        @for (m of montos; track m) {
+          <button type="button" class="chip" [class.chip--activo]="monto() === m"
+            [attr.aria-pressed]="monto() === m" (click)="monto.set(m)">{{ formato(m) }}</button>
+        }
+      </fieldset>
+
+      <button type="button" class="boton boton--primario donar__boton" (click)="agradecido.set(true)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
+        </svg>
+        Apoyar con {{ formato(monto()) }}
+      </button>
+      <p class="donar__nota">Página de demostración: no se realiza ningún cobro ni se piden datos de pago.</p>
+    } @else {
+      <p class="eyebrow">Donación recibida</p>
+      <h1>¡Gracias por tu apoyo, jugador!</h1>
+      <p class="donar__texto">
+        Con tu aporte de {{ formato(monto()) }} el faro de IndieDex sigue encendido.
+        Gracias por ayudar a que más juegos indie tengan su wiki en español.
+      </p>
+      <div class="donar__acciones">
+        <a routerLink="/juegos" class="boton boton--primario">Seguir explorando</a>
+        <a routerLink="/sugerencias" class="boton boton--oscuro">Proponer una wiki</a>
+      </div>
+      <p class="donar__nota">Página de demostración: no se realizó ningún cobro.</p>
+    }
+  </div>
+</section>

@@ -13,6 +13,8 @@ import { GestionJuegos } from './pages/equipo/gestion-juegos/gestion-juegos';
 import { JuegoForm } from './pages/equipo/juego-form/juego-form';
 import { ArticuloForm } from './pages/equipo/articulo-form/articulo-form';
 import { ContenidoForm } from './pages/equipo/contenido-form/contenido-form';
+import { Info } from './pages/info/info';
+import { Donar } from './pages/donar/donar';
 
 export const routes: Routes = [
   { path: '', component: Inicio, title: 'IndieDex · Wiki de juegos indie' },
@@ -24,6 +26,15 @@ export const routes: Routes = [
   { path: 'registro', component: Registro, title: 'Crear cuenta · IndieDex' },
   { path: 'perfil', component: Perfil, canActivate: [sesionGuard], title: 'Mi perfil · IndieDex' },
   { path: 'revision', component: PanelRevision, canActivate: [equipoGuard], title: 'Panel de revisión · IndieDex' },
+  { path: 'donar', component: Donar, title: 'Apoya IndieDex · IndieDex' },
+
+  // ---------- Páginas del pie (el texto está en core/textos.ts) ----------
+  { path: 'sobre', component: Info, data: { clave: 'sobre' } },
+  { path: 'normas', component: Info, data: { clave: 'normas' } },
+  { path: 'contacto', component: Info, data: { clave: 'contacto' } },
+  { path: 'privacidad', component: Info, data: { clave: 'privacidad' } },
+  { path: 'terminos', component: Info, data: { clave: 'terminos' } },
+  { path: 'cookies', component: Info, data: { clave: 'cookies' } },
 
   // ---------- Gestión del contenido: solo EDITOR / ADMIN ----------
   { path: 'equipo', redirectTo: 'equipo/juegos', pathMatch: 'full' },

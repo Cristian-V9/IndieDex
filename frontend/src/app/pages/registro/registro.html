@@ -60,8 +60,14 @@
 
       <label class="recordar">
         <input type="checkbox" name="acepto" [(ngModel)]="datos.acepto">
-        Acepto los Términos y la Política de privacidad de IndieDex.
+        <span>
+          Acepto los <button type="button" class="enlace-texto" (click)="$event.preventDefault(); ventanaTerminos.abrir()">Términos</button>
+          y la <button type="button" class="enlace-texto" (click)="$event.preventDefault(); ventanaPrivacidad.abrir()">Política de privacidad</button>
+          de IndieDex.
+        </span>
       </label>
+      <app-ventana-texto #ventanaTerminos clave="terminos" />
+      <app-ventana-texto #ventanaPrivacidad clave="privacidad" />
       @if (errores()['acepto']) { <p class="campo__error">{{ errores()['acepto'] }}</p> }
 
       @if (error() && !errores()['nombreUsuario'] && !errores()['email'] && !errores()['password']) {

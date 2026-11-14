@@ -1,0 +1,49 @@
+.donar { padding-block: 64px; }
+.donar__caja {
+  max-width: 640px;
+  margin-inline: auto;
+  padding: 48px 40px;
+  text-align: center;
+}
+.donar__icono {
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: #33291d;
+  color: var(--ambar);
+}
+.donar h1 { margin-top: 10px; font-size: clamp(32px, 5vw, 46px); }
+.donar__texto { margin-top: 14px; font-size: 16px; line-height: 1.6; color: var(--texto-suave); }
+.donar__montos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 28px 0 0;
+  padding: 0;
+  border: 0;
+}
+.donar__montos legend { width: 100%; margin-bottom: 10px; font-size: 12px; font-weight: 700; }
+.chip {
+  padding: 8px 16px;
+  background: var(--teal-oscuro);
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  color: var(--crema);
+  font-family: var(--fuente-texto);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.chip:hover { border-color: var(--ambar); }
+.chip--activo { background: var(--ambar); border-color: var(--ambar); color: var(--fondo); }
+.donar__boton { margin-top: 24px; }
+.donar__acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
+.donar__nota { margin-top: 18px; font-size: 12px; color: var(--texto-suave); }
+
+@media (max-width: 560px) {
+  .donar__caja { padding: 36px 20px; }
+}

@@ -1,0 +1,38 @@
+.ventana {
+  width: min(640px, calc(100vw - 32px));
+  max-height: min(80vh, 720px);
+  padding: 0;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  color: var(--crema);
+}
+.ventana::backdrop { background: rgba(3, 10, 16, .75); }
+.ventana__caja { display: flex; flex-direction: column; max-height: min(80vh, 720px); }
+.ventana__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--borde);
+}
+.ventana__cabecera h2 { font-size: 24px; }
+.ventana__cerrar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  color: var(--crema);
+  cursor: pointer;
+}
+.ventana__cerrar:hover { border-color: var(--ambar); color: var(--ambar); }
+.ventana__cuerpo { padding: 8px 24px 20px; overflow-y: auto; }
+.ventana__cuerpo h3 { margin-top: 20px; font-size: 17px; }
+.ventana__cuerpo p { margin-top: 8px; font-size: 14px; line-height: 1.6; color: #dcd7ca; }
+.ventana__intro { color: var(--texto-suave) !important; }
+.ventana__fecha { margin-top: 20px !important; font-size: 12px !important; color: var(--texto-suave) !important; }
+.ventana__pie { padding: 16px 24px; border-top: 1px solid var(--borde); text-align: right; }

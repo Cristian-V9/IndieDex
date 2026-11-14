@@ -1,0 +1,14 @@
+.info { max-width: 760px; padding-block: 48px 64px; }
+.info h1 { margin-top: 10px; font-size: clamp(34px, 5vw, 52px); }
+.info__intro { margin-top: 14px; font-size: 18px; line-height: 1.6; color: var(--texto-suave); }
+.info__seccion { margin-top: 36px; }
+.info__seccion h2 { font-size: 22px; }
+.info__seccion p { margin-top: 10px; font-size: 16px; line-height: 1.7; color: #dcd7ca; }
+.info__accion { margin-top: 36px; }
+.info__fecha {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+  font-size: 12px;
+  color: var(--texto-suave);
+}

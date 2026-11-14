@@ -156,8 +156,12 @@
 
       <label class="normas">
         <input type="checkbox" name="normas" [(ngModel)]="form.normas">
-        He leído las normas de la comunidad y no incluyo destripes sin avisar.
+        <span>
+          He leído las <button type="button" class="enlace-texto" (click)="$event.preventDefault(); ventanaNormas.abrir()">normas de la comunidad</button>
+          y no incluyo destripes sin avisar.
+        </span>
       </label>
+      <app-ventana-texto #ventanaNormas clave="normas" />
 
       @if (errorForm()) { <p class="aviso aviso--error">{{ errorForm() }}</p> }
       @if (exito()) { <p class="aviso aviso--exito">{{ exito() }}</p> }

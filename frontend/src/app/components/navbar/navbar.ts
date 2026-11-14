@@ -59,17 +59,6 @@ export class Navbar {
     setTimeout(() => this.cerrar(), 150);
   }
 
-  /** Baja al bloque de donación de la página actual, o va al catálogo (que siempre lo tiene). */
-  protected irADonar(evento: Event): void {
-    evento.preventDefault();
-    const bloque = document.getElementById('donar');
-    if (bloque) {
-      bloque.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      this.router.navigate(['/juegos'], { fragment: 'donar' });
-    }
-  }
-
   protected hayResultados(r: ResultadoBusqueda): boolean {
     return r.juegos.length + r.articulos.length + r.objetos.length + r.personajes.length > 0;
   }

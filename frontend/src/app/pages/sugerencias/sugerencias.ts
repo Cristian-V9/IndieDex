@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { VentanaTexto } from '../../components/ventana-texto/ventana-texto';
 import { claseEstado, OPCIONES_TIPO, textoEstado, textoTipo } from '../../core/etiquetas';
 import { erroresDeCampos, mensajeError } from '../../core/errores';
 import { EstadoSugerencia, JuegoResumen, Sugerencia, TipoSugerencia } from '../../core/modelos';
@@ -13,7 +14,7 @@ const POR_PAGINA = 5;
 
 @Component({
   selector: 'app-sugerencias',
-  imports: [DatePipe, FormsModule],
+  imports: [DatePipe, FormsModule, VentanaTexto],
   templateUrl: './sugerencias.html',
   styleUrl: './sugerencias.css',
 })

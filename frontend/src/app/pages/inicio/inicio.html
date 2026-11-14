@@ -39,10 +39,12 @@
 </section>
 
 
-<section class="contenedor cifras" aria-label="IndieDex en cifras">
-  @if (error()) {
+@if (error()) {
+  <div class="contenedor">
     <p class="aviso aviso--error">{{ error() }}</p>
-  }
+  </div>
+}
+<section class="contenedor cifras" aria-label="IndieDex en cifras">
   <div class="cifras__item">
     <strong>{{ cifras()?.totalArticulos ?? '—' }}</strong>
     <span>artículos publicados</span>

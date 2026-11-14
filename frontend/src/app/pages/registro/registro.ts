@@ -1,12 +1,13 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { VentanaTexto } from '../../components/ventana-texto/ventana-texto';
 import { erroresDeCampos, mensajeError } from '../../core/errores';
 import { AuthService } from '../../core/servicios/auth.service';
 
 @Component({
   selector: 'app-registro',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, VentanaTexto],
   templateUrl: './registro.html',
   styleUrl: './registro.css',
 })
