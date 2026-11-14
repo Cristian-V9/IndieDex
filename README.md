@@ -157,9 +157,34 @@ npm install
 npm start
 ```
 
-Abrir <http://localhost:4200>. La dirección del backend está en `frontend/src/app/core/api.config.ts`.
+Abrir <http://localhost:4200>. La dirección del backend está en `frontend/src/environments/`
+(`environment.development.ts` en local; `environment.ts` al desplegar).
 
 ---
+
+## Despliegue (Render)
+
+La aplicación se publica en [Render](https://render.com) como **un solo servicio**: el `Dockerfile` compila Angular,
+lo mete dentro de Spring Boot y la página y la API quedan en la misma dirección. La base de datos va en
+TiDB Cloud (compatible con MySQL, gratis), porque Render no ofrece MySQL.
+
+Pasos completos en **[DESPLIEGUE.md](DESPLIEGUE.md)**. En resumen:
+
+1. Crear la base gratuita en TiDB Cloud y copiar host, usuario y contraseña.
+2. En Render: **New → Blueprint → este repositorio** (usa `render.yaml`) y llenar `DB_URL`, `DB_USER` y `DB_PASSWORD`.
+3. Esperar a que diga **Live** y abrir `https://…onrender.com`.
+
+## Autenticación con JWT
+
+1. `POST /api/auth/login` (o `/registro`) comprueba la contraseña con BCrypt y devuelve un **token JWT**
+   firmado con una clave secreta (HMAC-SHA, `security/JwtService.java`). El token lleva el usuario, su rol y la fecha de expiración (24 h).
+2. Angular guarda el token y lo envía en cada petición: `Authorization: Bearer <token>`
+   (`frontend/src/app/core/auth.interceptor.ts`).
+3. En el backend, `security/JwtAuthFilter.java` valida la firma y la expiración en cada petición y deja al usuario
+   autenticado; `config/SecurityConfig.java` y `@PreAuthorize` deciden qué puede hacer según su rol.
+4. Sin token, o con uno vencido o alterado, las rutas protegidas responden **401**; con un rol insuficiente, **403**.
+
+Para verlo en vivo: en Swagger, hacer login, copiar el `token` y pegarlo en **Authorize**.
 
 ## Cuentas de prueba
 
@@ -251,6 +276,9 @@ Para volver a los datos de ejemplo iniciales: borrar la base (`DROP DATABASE ind
 
 ```
 IndieDex/
+├── Dockerfile                        Imagen para desplegar (Angular + Spring Boot en un .jar)
+├── render.yaml                       Configuración de Render
+├── DESPLIEGUE.md                     Guía de despliegue
 ├── backend/
 │   ├── pom.xml
 │   ├── postman/                      Colección de pruebas

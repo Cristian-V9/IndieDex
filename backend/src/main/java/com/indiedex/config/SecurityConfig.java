@@ -72,8 +72,10 @@ public class SecurityConfig {
                                 "/api/estadisticas",
                                 "/api/buscar").permitAll()
                         .requestMatchers("/error").permitAll()
-                        // Todo lo demás requiere sesión
-                        .anyRequest().authenticated())
+                        // El resto de la API requiere sesión
+                        .requestMatchers("/api/**").authenticated()
+                        // Fuera de /api están las páginas de Angular (se sirven desde aquí al desplegar)
+                        .anyRequest().permitAll())
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(respuestasSeguridad.sinAutenticar())
                         .accessDeniedHandler(respuestasSeguridad.sinPermiso()))
