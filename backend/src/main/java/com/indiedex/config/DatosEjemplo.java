@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +24,12 @@ import java.util.List;
  *   FaroNorte      -> EDITOR
  *   MarineroLunar  -> EDITOR
  *   LunaVerde, NieblaBaja, SemillaAzul, Pescadora88 -> USER
+ *
+ * En la página publicada, "admin" puede tener otra contraseña: ver ClaveAdmin.
  */
 @Slf4j
 @Component
+@Order(1)
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "indiedex.datos-ejemplo", havingValue = "true", matchIfMissing = true)
 public class DatosEjemplo implements CommandLineRunner {

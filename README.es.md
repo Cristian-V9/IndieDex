@@ -159,6 +159,7 @@ Para verlo funcionando: hacer login desde Swagger, copiar el `token` de la respu
 ## Cuentas de prueba
 
 Todas usan la contraseña `indiedex123`, y se puede entrar con el nombre de usuario o con el correo.
+En la página publicada, `admin` usa otra contraseña definida en Render (`ADMIN_PASSWORD`, ver DESPLIEGUE.md).
 
 | Usuario | Correo | Rol | Puede |
 |---|---|---|---|

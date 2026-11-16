@@ -159,6 +159,7 @@ To see it running: log in from Swagger, copy the `token` from the response and p
 ## Test accounts
 
 Every account uses the password `indiedex123`, and you can log in with either the username or the email.
+On the deployed site, `admin` uses a different password set in Render (`ADMIN_PASSWORD`, see DESPLIEGUE.md).
 
 | User | Email | Role | Can |
 |---|---|---|---|

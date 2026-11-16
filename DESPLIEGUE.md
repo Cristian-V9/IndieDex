@@ -58,7 +58,7 @@ No hace falta crear tablas: Spring las crea al arrancar, junto con los datos de 
 
 - `https://…onrender.com` → la página de inicio con Dredge y las cifras.
 - `https://…onrender.com/swagger-ui.html` → la documentación de la API.
-- Iniciar sesión con `admin` / `indiedex123` y probar Gestión, Revisión, votos y comentarios.
+- Iniciar sesión con `admin` (y la contraseña de `ADMIN_PASSWORD`) y probar Gestión, Revisión, votos y comentarios.
 - **JWT:** en Postman o Swagger, `POST /api/auth/login` devuelve el token; pegarlo en *Authorize*
   (Swagger) o en la variable de la colección permite usar las rutas protegidas.
 - Postman: importar la colección y cambiar la variable `baseUrl` por la dirección de Render.
@@ -68,8 +68,22 @@ No hace falta crear tablas: Spring las crea al arrancar, junto con los datos de 
 - **El plan gratis se duerme** tras 15 minutos sin visitas y tarda cerca de un minuto en despertar.
   Abre la página **2 o 3 minutos antes** de presentar o grabar el video.
 - Las cuentas de prueba (`indiedex123`) son públicas en el README: está bien para la clase, pero
-  no uses esas contraseñas en ningún otro lado.
+  no uses esas contraseñas en ningún otro lado. La cuenta `admin` de la página publicada usa la
+  contraseña de `ADMIN_PASSWORD` (sección 5).
 - Cada `git push` a `main` vuelve a desplegar automáticamente.
+
+## 5. Contraseña propia para `admin`
+
+`indiedex123` está escrita en el repositorio público, así que en la página publicada conviene que
+`admin` tenga otra contraseña:
+
+1. En Render, abre el servicio **indiedex → Environment → Add Environment Variable**.
+2. *Key*: `ADMIN_PASSWORD` · *Value*: una contraseña de al menos 8 caracteres que solo sepa el equipo.
+3. **Save Changes**. Render vuelve a desplegar y, al arrancar, el backend le pone esa contraseña a `admin`
+   (en los *Logs* aparece «Contraseña de la cuenta 'admin' actualizada desde ADMIN_PASSWORD»).
+
+Para cambiarla otra vez, edita el valor de la variable. Si la borras, `admin` conserva la última contraseña
+aplicada. En local, sin la variable, `admin` sigue usando `indiedex123`. Las demás cuentas de prueba no cambian.
 
 ## Problemas comunes
 
